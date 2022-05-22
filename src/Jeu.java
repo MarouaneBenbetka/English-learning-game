@@ -9,7 +9,6 @@ public class Jeu {
     private Partie partie ;
     private TreeMap<String, Joueur> joueurs = new TreeMap<>();
 
-
     // listes des enonces qui vont etre generer a partir d'un ficher
     public static Queue<EnonceDefinition> enonceDefinitions = new LinkedList<>();
     public static Queue<EnonceImage> enonceImages = new LinkedList<>();
@@ -60,16 +59,16 @@ public class Jeu {
 
             FileInputStream fis = new FileInputStream("./src/Donnes/enoncesDefinitions");
             ObjectInputStream ois = new ObjectInputStream(fis);
-            this.enonceDefinitions = (Queue<EnonceDefinition>) ois.readObject();
+            Jeu.enonceDefinitions = (Queue<EnonceDefinition>) ois.readObject();
             ois.close();
 
-            for(EnonceDefinition e : this.enonceDefinitions){
+            for(EnonceDefinition e : Jeu.enonceDefinitions){
                 System.out.println("Question"+e.getQuestion());
             }
 
 
         }catch (Exception e){
-            System.out.println(e.getMessage()+e.getStackTrace());
+            System.out.println(e.getMessage());
         }
 
 
@@ -105,7 +104,6 @@ public class Jeu {
             System.out.println(e.getMessage());
         }
 
-
     }
 
 
@@ -140,7 +138,6 @@ public class Jeu {
             System.out.println(e.getMessage());
         }
     }
-
     public void sauvgarderQuestionsText(){
 
         /*        String[] urls = new String[] {"aa" , "bb" , "cc" , "dd"} ;
@@ -196,7 +193,4 @@ public class Jeu {
         }
 
     }
-
-
-
 }

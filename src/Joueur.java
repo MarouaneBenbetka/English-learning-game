@@ -11,6 +11,8 @@ public class Joueur  implements Comparable<Joueur> , Serializable {
 
 
 
+
+
     public Joueur(String nom , String  motDePasse){
         this.nom = nom;
         this.motDePasse = motDePasse;
