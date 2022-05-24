@@ -7,5 +7,6 @@ public class CaseFin extends Case{
     @Override
     public void traiter( Partie partie) {
         partie.stopPartie();
+
     }
 }

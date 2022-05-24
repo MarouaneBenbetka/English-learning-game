@@ -2,7 +2,7 @@
 
 import Exceptions.positionInvalideException;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.Scanner;
 
 
@@ -17,9 +17,31 @@ public class Partie implements Serializable {
         this.joueur = joueur;
     }
 
-    public void chargerAncienPartie(){
-
+    public void sauvgarderPartie() {
+        try{
+            FileOutputStream fos  = new FileOutputStream("./src/Donnes/Parties/"+joueur.getNom());
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(this);
+            oos.close();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
+
+    public void chargerAncienPartie(){
+        try{
+            FileInputStream fis = new FileInputStream("./src/Donnes/Parties/"+joueur.getNom());
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            Partie partie = (Partie) ois.readObject();
+            this.plateau = partie.plateau;
+            this.score = partie.score;
+            this.finPartie = partie.finPartie;
+            ois.close();
+        }catch (Exception e){ //@Todo
+            System.out.println(e.getMessage());
+        }
+    }
+
 
     public void creerPartie(){
         plateau = new Plateau();
@@ -46,7 +68,6 @@ public class Partie implements Serializable {
            {
                //user input
                while(true){
-
                    try{
                        Scanner input = new Scanner(System.in);
                        int pos = input.nextInt();
@@ -104,5 +125,6 @@ public class Partie implements Serializable {
     public void stopPartie(){
         finPartie = true;
     }
+
 
 }
