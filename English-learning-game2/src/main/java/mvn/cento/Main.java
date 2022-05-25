@@ -2,12 +2,9 @@ package mvn.cento;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
-
 import javafx.stage.Stage;
-
+import mvn.cento.ui.Plateau;
 import java.io.IOException;
 
 public class Main extends Application {
@@ -15,7 +12,20 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
 
 
-        Scene scene = new Scene(new Button());
+        Scene scene = Plateau.getPlateauScene();
+
+
+
+
+
+
+
+
+
+
+
+
+        //window settings
         stage.setScene(scene);
         stage.setFullScreen(true);
         stage.setTitle("Cento Game");
