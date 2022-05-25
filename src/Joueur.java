@@ -6,7 +6,7 @@ public class Joueur  implements Comparable<Joueur> , Serializable {
     private String nom ;
     private String motDePasse;
     private int meilleurScore   ;
-    private Partie partieSauvgarde ;
+    private Partie partieRecente ;
 
 
 
@@ -24,6 +24,22 @@ public class Joueur  implements Comparable<Joueur> , Serializable {
         return this.motDePasse.equals(motDePasse);
     }
 
+
+    public int getMeilleurScore() {
+        return meilleurScore;
+    }
+
+    public void majMeilleurScore(int Score) {
+        if(Score > this.meilleurScore) this.meilleurScore = Score ;
+    }
+
+    public Partie getPartieRecente() {
+        return partieRecente;
+    }
+
+    public void setPartieRecente(Partie partieRecente) {
+        this.partieRecente = partieRecente;
+    }
 
     //equals
     @Override

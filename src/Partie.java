@@ -104,5 +104,6 @@ public class Partie implements Serializable {
     public void stopPartie(){
         finPartie = true;
     }
+    public int getScore(){return score;}
 
 }

@@ -1,20 +1,37 @@
 import Exceptions.*;
 
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) throws utilisateurDejaExistantException {
-        System.out.println("Hello Islam");
+
 
         Jeu jeu = new Jeu();
-        try {
-            jeu.creerCompte("Marouane99" , "blabla");
 
-        }catch (utilisateurDejaExistantException e){
-            System.out.println(e.getMessage());
+        Scanner input = new Scanner(System.in);
+
+
+
+        while (true){
+            System.out.print("User Name :");
+            String userName =  input.nextLine();
+            System.out.print("Password :");
+            String password = input.nextLine();
+
+            try {
+                jeu.identifier(userName  , password);
+                jeu.getPartie().creerPartie();
+                jeu.getPartie().lancerPartie();
+                break;
+
+            }catch (utilisateurNonExistantException | motDePasseIncorrectException e){
+                System.out.println(e.getMessage());
+            }
+
         }
 
 
-        jeu.getPartie().creerPartie();
-        jeu.getPartie().lancerPartie();
+
 
     }
 }

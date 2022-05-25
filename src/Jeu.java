@@ -16,6 +16,7 @@ public class Jeu {
 
 
     public Jeu(){
+        //sauvgarderJoueurs();
         chargerEnonceDefinitions();
         chargerEnonceImages();
         chargerComptes();
@@ -63,9 +64,9 @@ public class Jeu {
             this.enonceDefinitions = (Queue<EnonceDefinition>) ois.readObject();
             ois.close();
 
-            for(EnonceDefinition e : this.enonceDefinitions){
+            /*for(EnonceDefinition e : this.enonceDefinitions){
                 System.out.println("Question"+e.getQuestion());
-            }
+            }*/
 
 
         }catch (Exception e){
@@ -83,9 +84,9 @@ public class Jeu {
             ObjectInputStream ois = new ObjectInputStream(fis);
             enonceImages = (Queue<EnonceImage>) ois.readObject();
             ois.close();
-            for(EnonceImage e : enonceImages){
-                System.out.println("Question"+e.getQuestion());
-            }
+           /* for(EnonceImage e : enonceImages){
+                System.out.println("Question Image"+e.getQuestion());
+            }*/
 
 
         }catch (IOException | ClassNotFoundException e){
@@ -101,8 +102,11 @@ public class Jeu {
             ObjectInputStream ois = new ObjectInputStream(fis);
             joueurs = (TreeMap<String, Joueur> ) ois.readObject();
             ois.close();
+
+
+
         }catch (IOException | ClassNotFoundException e){
-            System.out.println(e.getMessage());
+            System.out.println("Compte :"+e.getMessage());
         }
 
 
@@ -113,7 +117,7 @@ public class Jeu {
 
     public void sauvgarderJoueurs(){
         //uncomment this code if you want to generate a new file
-/*        joueurs.put("Marouane" , new Joueur("Marouane","111"  ));
+        joueurs.put("Marouane" , new Joueur("Marouane","111"  ));
         joueurs.put("Islam" , new Joueur("Islam","111"  ));
         joueurs.put("Raid" , new Joueur("Raid","111"  ));
         joueurs.put("Houssam" , new Joueur("Houssam","111"  ));
@@ -127,7 +131,7 @@ public class Jeu {
             oos.close();
         }catch (Exception e){
             System.out.println(e.getMessage());
-        }*/
+        }
 
 
 
