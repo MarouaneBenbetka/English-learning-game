@@ -17,10 +17,17 @@
 }
 
 #plateau .button:hover{
-/*    -fx-opacity: .6;*/
+    -fx-opacity: .8;
+    -fx-cursor: hand;
+/*    -fx-border-width: 3px;
+    -fx-border-color: #8bffff;*/
+}
+
+#plateau .selectedButton{
+    /*    -fx-opacity: .6;*/
     -fx-cursor: hand;
     -fx-border-width: 3px;
-    -fx-border-color: #8bffff;
+    -fx-border-color: #abfcfc;
 }
 
 #SideBar{
@@ -117,6 +124,7 @@
 .finCase{
     -fx-background-color: #6e6d6d;
     -fx-opacity: 1;
+    -fx-text-fill: white;
 }
 
 

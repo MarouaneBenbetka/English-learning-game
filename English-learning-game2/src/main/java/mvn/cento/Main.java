@@ -44,6 +44,9 @@ public class Main extends Application {
         stage.setTitle("Cento Game");
         stage.getIcons().add(new Image(Main.class.getResource("images/logo.png").toExternalForm()));
         stage.show();
+
+
+
     }
 
     public static void main(String[] args) {

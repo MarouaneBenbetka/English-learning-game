@@ -186,8 +186,8 @@ public class Plateau {
 
     public int getDe1(){return des[0].getNumero();}
     public int getDe2(){return des[1].getNumero();}
-    public void positioner(int pos , int dep) throws positionInvalideException {
-        if(  (pos - positionCourante) != dep)  throw  new positionInvalideException() ;
+    public void positioner(int pos , int posCorrect) throws positionInvalideException {
+        if(  pos != posCorrect)  throw  new positionInvalideException() ;
 
         this.positionCourante = pos ;
     }

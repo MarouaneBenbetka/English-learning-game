@@ -19,11 +19,19 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import mvn.cento.Main;
+import mvn.cento.Noyeau.Exceptions.positionInvalideException;
 import mvn.cento.Noyeau.Plateau;
 
 import java.io.IOException;
+import java.util.Scanner;
 
 public class PlateauScene {
+
+    private static int deplacement;
+    private static int positionAdeplacer;
+    //private static int lastSelectedPosition = 1;
+
+
     public static Scene getPlateauScene(Plateau generatedPlateau) throws IOException {
 
 
@@ -94,7 +102,7 @@ public class PlateauScene {
         score.getStyleClass().add("white-text");
         infos.getChildren().add(score);
         Text position = new Text();
-        position.setText("Postion : 69");
+        position.setText("Postion : 1");
         position.getStyleClass().add("white-text");
         infos.getChildren().add(position);
         Text caseType = new Text();
@@ -205,14 +213,26 @@ public class PlateauScene {
                     casePlateau.setText("Jump");
                 }
                 case BLANC -> casePlateau.getStyleClass().add("parcourCase");
-                case NOIR -> casePlateau.getStyleClass().add("finCase");
+                case NOIR -> {
+                    casePlateau.getStyleClass().add("finCase");
+                    casePlateau.setText("End");
+                }
             }
 
 
             casePlateau.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    System.out.println( mouseEvent.getTarget());
+                    Button button = ((Button )mouseEvent.getTarget());
+                    try{
+                        int pos =  Integer.parseInt(button.getId()) -1 ;
+                        generatedPlateau.positioner(pos,positionAdeplacer -1);
+                        button.getStyleClass().remove("selectedButton");
+                        position.setText("Position : "+ (pos + 1));
+                        throwButton.setDisable(false);
+                    }catch (positionInvalideException e){
+                        System.out.println(e.getMessage());
+                    }
                 }
 
             });
@@ -226,7 +246,7 @@ public class PlateauScene {
 
 
 
-                generatedPlateau.lancerDes();
+                deplacement = generatedPlateau.lancerDes();
                 Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.2), new EventHandler<ActionEvent>() {
 
                     private int i = 1;
@@ -241,6 +261,17 @@ public class PlateauScene {
                         }else {
                             dice1.setImage(new Image(Main.class.getResource("images/dice"+generatedPlateau.getDe1()+".png").toExternalForm()));
                             dice2.setImage(new Image(Main.class.getResource("images/dice"+generatedPlateau.getDe2()+".png").toExternalForm()));
+                            positionAdeplacer= generatedPlateau.getPositionCourante()+deplacement + 1;
+                            if(positionAdeplacer<=100){
+                                Button selectedButton = (Button) scene.lookup("#"+positionAdeplacer);
+                                selectedButton.getStyleClass().add("selectedButton");
+                            }else {
+                                positionAdeplacer = generatedPlateau.getPositionCourante() - (  positionAdeplacer - 100 );
+                                Button selectedButton = (Button) scene.lookup("#"+positionAdeplacer);
+                                selectedButton.getStyleClass().add("selectedButton");
+                            }
+
+
                         }
 
                         i++;
@@ -250,8 +281,7 @@ public class PlateauScene {
                 timeline.setCycleCount(6);
                 timeline.play();
 
-
-
+                throwButton.setDisable(true);
 
             }
 
