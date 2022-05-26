@@ -4,15 +4,28 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import mvn.cento.ui.Plateau;
+import mvn.cento.Noyeau.Exceptions.*;
+import mvn.cento.Noyeau.*;
+import mvn.cento.ui.PlateauScene;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class Main extends Application {
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws IOException, motDePasseIncorrectException, utilisateurNonExistantException {
+
+        Jeu jeu = new Jeu();
 
 
-        Scene scene = Plateau.getPlateauScene();
+
+
+        jeu.identifier("Marouane"  , "111");
+        jeu.getPartie().creerPartie();
+        //jeu.getPartie().lancerPartie();
+
+
+
+        Scene scene = PlateauScene.getPlateauScene( jeu.getPartie().getPlateau());
 
 
 

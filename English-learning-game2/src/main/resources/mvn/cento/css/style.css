@@ -17,14 +17,14 @@
 }
 
 #plateau .button:hover{
-    -fx-background-color: #d2d2d2;
+/*    -fx-opacity: .6;*/
     -fx-cursor: hand;
+    -fx-border-width: 3px;
+    -fx-border-color: #8bffff;
 }
 
 #SideBar{
     -fx-background-color: rgba(81, 43, 238, 0.60);
-
-
 }
 
 #userDataBox , #dicesBox {
@@ -77,14 +77,48 @@
 }
 
 
-#plateau  #1{
-    -fx-background-color: #a9dca9;
+
+
+.bonusCase{
+    -fx-background-color: #a0eea0;
     -fx-opacity: 1;
 }
 
-.bonusIcon{
+.malusCase{
+    -fx-background-color: #ea9898;
+    -fx-opacity: 1;
+}
+
+.questionDefCase{
+    -fx-background-color: #95c5ea;
+    -fx-opacity: 1;
+}
+
+.questionImgCase{
+    -fx-background-color: #f1a4dd;
+    -fx-opacity: 1;
+}
+
+.sautCase{
+    -fx-background-color: #f1b7a0;
+    -fx-opacity: 1;
+}
+
+.parcourCase{
+
 
 }
+
+.departCase{
+    -fx-background-color: #efeda7;
+    -fx-opacity: 1;
+}
+
+.finCase{
+    -fx-background-color: #6e6d6d;
+    -fx-opacity: 1;
+}
+
 
 
 

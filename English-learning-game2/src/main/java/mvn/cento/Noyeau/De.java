@@ -3,7 +3,7 @@ package mvn.cento.Noyeau;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class De {
-    int numero  ;
+    private int numero  ;
 
     public int lancerDe(){
         this.numero = ThreadLocalRandom.current().nextInt(1, 6 + 1);
@@ -11,6 +11,8 @@ public class De {
     }
 
 
+    public int getNumero(){return numero;}
+    public void setNumero(int numero){this.numero = numero;}
 
 
 }

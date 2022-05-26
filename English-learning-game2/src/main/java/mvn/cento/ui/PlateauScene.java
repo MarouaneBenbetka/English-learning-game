@@ -1,20 +1,32 @@
 package mvn.cento.ui;
 
+
+
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import mvn.cento.Main;
+import mvn.cento.Noyeau.Plateau;
 
 import java.io.IOException;
 
-public class Plateau {
-    public static Scene getPlateauScene() throws IOException {
+public class PlateauScene {
+    public static Scene getPlateauScene(Plateau generatedPlateau) throws IOException {
+
+
         FXMLLoader plateauFXML = new FXMLLoader(Main.class.getResource("view/home.fxml"));
 
         GridPane plateauContainer = new GridPane();
@@ -107,7 +119,7 @@ public class Plateau {
         HBox dicesImages = new HBox();
         dicesImages.setAlignment(Pos.CENTER);
 
-        ImageView dice1 = new ImageView(Main.class.getResource("images/dice6.png").toExternalForm())  ;
+        ImageView dice1 = new ImageView(Main.class.getResource("images/dice1.png").toExternalForm())  ;
         dice1.setFitWidth(66);
         dice1.setPreserveRatio(true);
 
@@ -163,8 +175,93 @@ public class Plateau {
 
 
         // BonusCase.setGraphic(bonusIcon);
+        for (int i = 0 ; i< 100 ; i++){
+            Button casePlateau =(Button) plateau.getChildren().get(i);
+            switch (generatedPlateau.getCaseParPosition(i).getCouleur()){
+                case ROUGE ->{
+
+                    casePlateau.getStyleClass().add("malusCase");
+                    casePlateau.setText("!");
+                }
+                case VERT -> {
+                    casePlateau.getStyleClass().add("bonusCase");
+                    casePlateau.setText("+");
+                }
+                case JAUNE -> {
+                    casePlateau.getStyleClass().add("departCase");
+                    casePlateau.setText("Start");
+                }
+                case BLEU -> {
+                    casePlateau.getStyleClass().add("questionDefCase");
+                    casePlateau.setText("?");
+                }
+
+                case ROSE -> {
+                    casePlateau.getStyleClass().add("questionImgCase");
+                    casePlateau.setText("?");
+                }
+                case ORANGE -> {
+                    casePlateau.getStyleClass().add("sautCase") ;
+                    casePlateau.setText("Jump");
+                }
+                case BLANC -> casePlateau.getStyleClass().add("parcourCase");
+                case NOIR -> casePlateau.getStyleClass().add("finCase");
+            }
+
+
+            casePlateau.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    System.out.println( mouseEvent.getTarget());
+                }
+
+            });
+        }
+
+
+        //event handler for dices
+        throwButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+
+
+
+                generatedPlateau.lancerDes();
+                Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.2), new EventHandler<ActionEvent>() {
+
+                    private int i = 1;
+
+                    @Override
+                    public void handle(ActionEvent event) {
+
+                        if(i<6){
+                            dice1.setImage(new Image(Main.class.getResource("images/dice"+i+".png").toExternalForm()));
+                            dice2.setImage(new Image(Main.class.getResource("images/dice"+(7-i)+".png").toExternalForm()));
+
+                        }else {
+                            dice1.setImage(new Image(Main.class.getResource("images/dice"+generatedPlateau.getDe1()+".png").toExternalForm()));
+                            dice2.setImage(new Image(Main.class.getResource("images/dice"+generatedPlateau.getDe2()+".png").toExternalForm()));
+                        }
+
+                        i++;
+
+                    }
+                }));
+                timeline.setCycleCount(6);
+                timeline.play();
+
+
+
+
+            }
+
+
+        });
+
+
 
 
         return scene;
     }
 }
+

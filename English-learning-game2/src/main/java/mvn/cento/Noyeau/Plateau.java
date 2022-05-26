@@ -184,6 +184,8 @@ public class Plateau {
         return this.des[0].lancerDe() +  this.des[1].lancerDe() ;
     }
 
+    public int getDe1(){return des[0].getNumero();}
+    public int getDe2(){return des[1].getNumero();}
     public void positioner(int pos , int dep) throws positionInvalideException {
         if(  (pos - positionCourante) != dep)  throw  new positionInvalideException() ;
 
@@ -209,4 +211,5 @@ public class Plateau {
         return cases[positionCourante] ;
     }
 
+    public Case getCaseParPosition(int pos){return  cases[pos] ;}
 }
