@@ -1,6 +1,7 @@
 module mvn.englishlearninggame2 {
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.graphics;
 
     opens mvn.cento to javafx.fxml;
     exports mvn.cento;
