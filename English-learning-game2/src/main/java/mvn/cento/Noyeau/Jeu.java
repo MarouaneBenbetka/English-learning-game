@@ -1,10 +1,9 @@
 package mvn.cento.Noyeau;
 
+import mvn.cento.Main;
 import mvn.cento.Noyeau.Exceptions.*;
 import java.io.*;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.TreeMap;
+import java.util.*;
 
 public class Jeu {
 
@@ -18,11 +17,11 @@ public class Jeu {
 
 
     public Jeu(){
-        sauvgarderJoueurs();
-        sauvgarderQuestionsImage();
+        //sauvgarderJoueurs();
+       // sauvgarderQuestionsImage();
         chargerEnonceDefinitions();
         chargerEnonceImages();
-        chargerComptes();
+       // chargerComptes();
     }
 
 
@@ -60,44 +59,58 @@ public class Jeu {
 
     public void chargerEnonceDefinitions(){
 
-        try{
+        Scanner input = new Scanner(Objects.requireNonNull(Main.class.getResourceAsStream("data/definitionsQuestions.txt")));
+        String question = "" ;
+        String reponse = "";
+           while (input.hasNextLine()){
+               String line = input.nextLine();
 
-            FileInputStream fis = new FileInputStream("./src/Donnes/enoncesDefinitions");
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            Jeu.enonceDefinitions = (Queue<EnonceDefinition>) ois.readObject();
-            ois.close();
+               if(line.startsWith("Question:")){
+                   question = line.substring(9);
+               }else if(line.startsWith("Reponse:")){
+                   reponse = line.substring(8)  ;
+                   enonceDefinitions.add(new EnonceDefinition(question,reponse));
+               }
 
-            for(EnonceDefinition e : Jeu.enonceDefinitions){
-                System.out.println("Question"+e.getQuestion());
-            }
+           }
 
-
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-
-
+        Collections.shuffle((LinkedList) enonceDefinitions);
+           for (EnonceDefinition a : enonceDefinitions){
+               System.out.println(a.getQuestion() + "/"+a.getReponse());
+           }
     }
+
+
     public void chargerEnonceImages(){
 
-
-        try{
-
-            FileInputStream fis = new FileInputStream("./src/Donnes/enoncesImages");
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            enonceImages = (Queue<EnonceImage>) ois.readObject();
-            ois.close();
-           /* for(Noyeau.EnonceImage e : enonceImages){
-                System.out.println("Question Image"+e.getQuestion());
-            }*/
-
-
-        }catch (IOException | ClassNotFoundException e){
-            System.out.println(e.getMessage());
+        Scanner input = new Scanner(Objects.requireNonNull(Main.class.getResourceAsStream("data/imageQuestions.txt")));
+        String question = "" ;
+        String[] reponses = new String[4];
+        int bonneReponse ;
+        while (input.hasNextLine()){
+            String line = input.nextLine();
+            if(line.startsWith("definition:")){
+                question = line.substring(11);
+            }else if(line.startsWith("path1:")){
+                reponses[0] = line.substring(6);
+            }else if(line.startsWith("path2:")){
+                reponses[1] = line.substring(6);
+            }else if(line.startsWith("path3:")){
+                reponses[2] = line.substring(6);
+            }else if(line.startsWith("path4:")){
+                reponses[3] = line.substring(6);
+            }else if(line.startsWith("reponse:")){
+                bonneReponse = Integer.parseInt(line.substring(8));
+                enonceImages.add(new EnonceImage(question,reponses,bonneReponse));
+            }
         }
-
-
+        Collections.shuffle((LinkedList) enonceImages);
+        for (EnonceImage a : enonceImages){
+            System.out.println(a.getQuestion() +"/"+a.getIndiceBonneReponse());
+        }
     }
+
+
     public void chargerComptes(){
 
         try {
@@ -116,87 +129,8 @@ public class Jeu {
     public void sauvgarderPartie(){}
 
     public void sauvgarderJoueurs(){
-        //uncomment this code if you want to generate a new file
-        joueurs.put("Marouane" , new Joueur("Marouane","111"  ));
-        joueurs.put("Islam" , new Joueur("Islam","111"  ));
-        joueurs.put("Raid" , new Joueur("Raid","111"  ));
-        joueurs.put("Houssam" , new Joueur("Houssam","111"  ));
-
-
-        //write to a file
-        try {
-            FileOutputStream fos = new FileOutputStream("./src/Donnes/comptes");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(joueurs);
-            oos.close();
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-
-
-
-        try {
-            FileOutputStream fos = new FileOutputStream("./src/Donnes/comptes");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(joueurs);
-            oos.close();
-        } catch (IOException e){
-            System.out.println(e.getMessage());
-        }
-    }
-    public void sauvgarderQuestionsText(){
-
-        /*        String[] urls = new String[] {"aa" , "bb" , "cc" , "dd"} ;
-
-
-        Noyeau.EnonceDefinition enonceDefinition = new Noyeau.EnonceDefinition("Question def 1 ?" , urls , 1) ;
-
-        enonceDefinitions.add(enonceDefinition);
-        enonceDefinition = new Noyeau.EnonceDefinition("Question def 2 ?" , urls , 1);
-        enonceDefinitions.add(enonceDefinition);
-        enonceDefinition = new Noyeau.EnonceDefinition("Question def 3 ?" , urls , 1);
-
-        enonceDefinitions.add(enonceDefinition);
-        enonceDefinition = new Noyeau.EnonceDefinition("Question def 4 ?" , urls , 1);
-
-        enonceDefinitions.add(enonceDefinition);*/
-
-
-        try
-        {
-            FileOutputStream fos = new FileOutputStream("./src/Donnes/enoncesDefinitions");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(enonceDefinitions);
-            oos.close();
-        } catch (IOException e){
-            System.out.println(e.getMessage());
-        }
 
     }
 
-    public void sauvgarderQuestionsImage(){
-            String[] urls = new String[] {"aa" , "bb" , "cc" , "dd"} ;
 
-
-        EnonceImage enonceImage = new EnonceImage("Question image 1?" , urls , 1) ;
-        enonceImages.add(enonceImage);
-        enonceImage = new EnonceImage("Question image 2?" , urls , 1);
-        enonceImages.add(enonceImage);
-        enonceImage = new EnonceImage("Question image 3?" , urls , 1);
-        enonceImages.add(enonceImage);
-        enonceImage = new EnonceImage("Question image 4?" , urls , 1);
-        enonceImages.add(enonceImage);
-
-
-
-        try {
-            FileOutputStream fos = new FileOutputStream("./src/Donnes/enoncesImages");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(enonceImages);
-            oos.close();
-        } catch (IOException e){
-            System.out.println(e.getMessage());
-        }
-
-    }
 }

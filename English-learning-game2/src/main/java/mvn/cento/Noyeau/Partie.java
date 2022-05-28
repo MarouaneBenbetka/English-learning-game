@@ -15,6 +15,7 @@ public class Partie implements Serializable {
 
     public Partie(Joueur joueur){
         this.joueur = joueur;
+        finPartie = false;
     }
 
     public void sauvgarderPartie() {
@@ -118,6 +119,6 @@ public class Partie implements Serializable {
         finPartie = true;
     }
     public int getScore(){return score;}
-
+    public boolean getFinPartie(){return finPartie;}
 
 }

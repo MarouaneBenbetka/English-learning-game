@@ -1,7 +1,6 @@
 package mvn.cento.ui;
 
 
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -12,6 +11,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -19,25 +19,27 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import mvn.cento.Main;
+import mvn.cento.Noyeau.Couleur;
 import mvn.cento.Noyeau.Exceptions.positionInvalideException;
+import mvn.cento.Noyeau.Partie;
 import mvn.cento.Noyeau.Plateau;
 
 import java.io.IOException;
-import java.util.Scanner;
+import java.util.Objects;
 
 public class PlateauScene {
 
     private static int deplacement;
     private static int positionAdeplacer;
-    //private static int lastSelectedPosition = 1;
+    private static GridPane layout = new GridPane();
+    private static GridPane plateauContainer = new GridPane();
+    private static StackPane popUpContainer ;
 
+    public static Scene getPlateauScene(Partie partie) throws IOException {
 
-    public static Scene getPlateauScene(Plateau generatedPlateau) throws IOException {
-
-
+        Plateau generatedPlateau = partie.getPlateau();
         FXMLLoader plateauFXML = new FXMLLoader(Main.class.getResource("view/home.fxml"));
 
-        GridPane plateauContainer = new GridPane();
 
         AnchorPane plateau = plateauFXML.load();
         plateau.setScaleX(1.3);
@@ -97,8 +99,10 @@ public class PlateauScene {
         //board informations
 
         VBox infos = new VBox();
+        infos.setAlignment(Pos.CENTER_LEFT);
         Text score = new Text();
-        score.setText("Total Score : 420");
+
+        score.setText("Total Score : 0");
         score.getStyleClass().add("white-text");
         infos.getChildren().add(score);
         Text position = new Text();
@@ -106,13 +110,20 @@ public class PlateauScene {
         position.getStyleClass().add("white-text");
         infos.getChildren().add(position);
         Text caseType = new Text();
-        caseType.setText("Case : Normal");
+        caseType.setText("Case : Start");
         caseType.getStyleClass().add("white-text");
         infos.getChildren().add(caseType);
+        Text errorMessage = new Text();
+        errorMessage.setText("Incorrect position");
+        errorMessage.getStyleClass().add("errorMessage");
+        errorMessage.setVisible(false);
+        infos.getChildren().add(errorMessage);
 
         VBox.setMargin(score ,new Insets(2,8,2,8));
         VBox.setMargin(position ,new Insets(2,8,2,8));
         VBox.setMargin(caseType ,new Insets(2,8,2,8));
+        VBox.setMargin(errorMessage ,new Insets(24,8,2,8));
+
         GridPane.setMargin(infos,new Insets(80,30,10,30));
 
         //dices informations
@@ -127,11 +138,11 @@ public class PlateauScene {
         HBox dicesImages = new HBox();
         dicesImages.setAlignment(Pos.CENTER);
 
-        ImageView dice1 = new ImageView(Main.class.getResource("images/dice1.png").toExternalForm())  ;
+        ImageView dice1 = new ImageView(Objects.requireNonNull(Main.class.getResource("images/dices/dice1.png")).toExternalForm())  ;
         dice1.setFitWidth(66);
         dice1.setPreserveRatio(true);
 
-        ImageView dice2 = new ImageView(Main.class.getResource("images/dice6.png").toExternalForm())  ;
+        ImageView dice2 = new ImageView(Objects.requireNonNull(Main.class.getResource("images/dices/dice6.png")).toExternalForm())  ;
         dice2.setFitWidth(66);
         dice2.setPreserveRatio(true);
 
@@ -146,8 +157,8 @@ public class PlateauScene {
         Button throwButton = new Button();
 
         throwButton.setId("throwButton");
-        throwButton.setPrefWidth(146);
-        throwButton.setText("Throw");
+        throwButton.setPrefWidth(100);
+        throwButton.setText("Roll");
         VBox.setMargin(throwButton,new Insets(20,2,10,2));
 
         dices.getChildren().add(dicesImages);
@@ -161,24 +172,30 @@ public class PlateauScene {
         VBox sizedBox = new VBox();
         sizedBox.setPrefHeight(1000);
 
-        sideBar.add(userData,00,0);
-        sideBar.add(infos,00,1);
+        sideBar.add(userData, 0,0);
+        sideBar.add(infos,0,1);
         sideBar.add(sizedBox,0,2);
-        sideBar.add(dices,00,3);
+        sideBar.add(dices,0,3);
 
 
 
 
-        GridPane layout = new GridPane();
+
         layout.setAlignment(Pos.CENTER_LEFT);
         layout.add(sideBar,0,0 );
         layout.add(plateauContainer,1,0);
+
+
+
         GridPane.setHalignment(plateauContainer, HPos.CENTER);
         layout.setId("pane");
 
 
-        Scene scene = new Scene(layout, 1500, 800);
-        scene.getStylesheets().addAll(Main.class.getResource("css/style.css").toExternalForm());
+        Scene scene = new Scene(layout, 1300, 750);
+        scene.getStylesheets().addAll(Objects.requireNonNull(Main.class.getResource("css/style.css")).toExternalForm());
+
+
+
 
 
 
@@ -189,11 +206,9 @@ public class PlateauScene {
                 case ROUGE ->{
 
                     casePlateau.getStyleClass().add("malusCase");
-                    casePlateau.setText("!");
                 }
                 case VERT -> {
                     casePlateau.getStyleClass().add("bonusCase");
-                    casePlateau.setText("+");
                 }
                 case JAUNE -> {
                     casePlateau.getStyleClass().add("departCase");
@@ -201,90 +216,125 @@ public class PlateauScene {
                 }
                 case BLEU -> {
                     casePlateau.getStyleClass().add("questionDefCase");
-                    casePlateau.setText("?");
                 }
 
                 case ROSE -> {
                     casePlateau.getStyleClass().add("questionImgCase");
-                    casePlateau.setText("?");
                 }
                 case ORANGE -> {
                     casePlateau.getStyleClass().add("sautCase") ;
-                    casePlateau.setText("Jump");
                 }
                 case BLANC -> casePlateau.getStyleClass().add("parcourCase");
                 case NOIR -> {
                     casePlateau.getStyleClass().add("finCase");
-                    casePlateau.setText("End");
+                    casePlateau.setText("END");
                 }
             }
 
 
-            casePlateau.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    Button button = ((Button )mouseEvent.getTarget());
-                    try{
-                        int pos =  Integer.parseInt(button.getId()) -1 ;
-                        generatedPlateau.positioner(pos,positionAdeplacer -1);
-                        button.getStyleClass().remove("selectedButton");
-                        position.setText("Position : "+ (pos + 1));
-                        throwButton.setDisable(false);
-                    }catch (positionInvalideException e){
-                        System.out.println(e.getMessage());
-                    }
-                }
+            casePlateau.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
+                Button button = casePlateau;
+                try{
+                    int pos =  Integer.parseInt(button.getId()) -1 ;
+                    generatedPlateau.positioner(pos,positionAdeplacer );
+                    button.getStyleClass().remove("selectedButton");
+                    button.toBack();
+                    errorMessage.setVisible(false);
 
+                    Couleur couleurCase = generatedPlateau.getCaseParPosition(positionAdeplacer).getCouleur() ;
+                    switch (couleurCase){
+                        case BLANC -> caseType.setText("Case : Normal");
+                        case NOIR -> caseType.setText("Case : End");
+                        case ROSE, BLEU -> caseType.setText("Case : Question");
+                        case VERT -> caseType.setText("Case : Bonus");
+                        case ORANGE -> caseType.setText("Case : Jump");
+                        case JAUNE -> caseType.setText("Case : Start");
+                        case ROUGE -> caseType.setText("Case : Penalty");
+                    }
+
+                    do {
+
+                        positionAdeplacer= generatedPlateau.getPositionCourante();
+                        couleurCase = generatedPlateau.getCaseParPosition(positionAdeplacer).getCouleur() ;
+                        position.setText("Position : "+ (positionAdeplacer + 1));
+                        if(couleurCase == Couleur.ROSE){
+                           addImgPopUp();
+                        }else if(couleurCase == Couleur.BLEU){
+                            addDefPopUp();
+                        }else {
+                            generatedPlateau.getCaseParPosition(positionAdeplacer).traiter(partie);
+
+                        }
+                        score.setText("Total Score : "+partie.getScore());
+
+                    } while (generatedPlateau.getPositionCourante() != positionAdeplacer);
+
+                    if(partie.getFinPartie()){
+                        throwButton.setDisable(true);
+                    }else {
+                        throwButton.setDisable(false);
+                    }
+
+
+
+                }catch (positionInvalideException e){
+                    errorMessage.setVisible(true);
+                    System.out.println(e.getMessage());
+                }
             });
         }
 
 
         //event handler for dices
-        throwButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
+        throwButton.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
 
 
 
+            deplacement = generatedPlateau.lancerDes();
+
+
+            if((generatedPlateau.getPositionCourante() + deplacement)>99 || generatedPlateau.getCaseParPosition(generatedPlateau.getPositionCourante() + deplacement).getCouleur()== Couleur.BLANC){
                 deplacement = generatedPlateau.lancerDes();
-                Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.2), new EventHandler<ActionEvent>() {
-
-                    private int i = 1;
-
-                    @Override
-                    public void handle(ActionEvent event) {
-
-                        if(i<6){
-                            dice1.setImage(new Image(Main.class.getResource("images/dice"+i+".png").toExternalForm()));
-                            dice2.setImage(new Image(Main.class.getResource("images/dice"+(7-i)+".png").toExternalForm()));
-
-                        }else {
-                            dice1.setImage(new Image(Main.class.getResource("images/dice"+generatedPlateau.getDe1()+".png").toExternalForm()));
-                            dice2.setImage(new Image(Main.class.getResource("images/dice"+generatedPlateau.getDe2()+".png").toExternalForm()));
-                            positionAdeplacer= generatedPlateau.getPositionCourante()+deplacement + 1;
-                            if(positionAdeplacer<=100){
-                                Button selectedButton = (Button) scene.lookup("#"+positionAdeplacer);
-                                selectedButton.getStyleClass().add("selectedButton");
-                            }else {
-                                positionAdeplacer = generatedPlateau.getPositionCourante() - (  positionAdeplacer - 100 );
-                                Button selectedButton = (Button) scene.lookup("#"+positionAdeplacer);
-                                selectedButton.getStyleClass().add("selectedButton");
-                            }
-
-
-                        }
-
-                        i++;
-
-                    }
-                }));
-                timeline.setCycleCount(6);
-                timeline.play();
-
-                throwButton.setDisable(true);
-
+                System.out.println("again");
             }
 
+
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.2), new EventHandler<>() {
+
+                private int i = 1;
+
+                @Override
+                public void handle(ActionEvent event) {
+
+                    if (i < 6) {
+                        dice1.setImage(new Image(Objects.requireNonNull(Main.class.getResource("images/dices/dice" + i + ".png")).toExternalForm()));
+                        dice2.setImage(new Image(Objects.requireNonNull(Main.class.getResource("images/dices/dice" + (7 - i) + ".png")).toExternalForm()));
+
+                    } else {
+                        dice1.setImage(new Image(Objects.requireNonNull(Main.class.getResource("images/dices/dice" + generatedPlateau.getDe1() + ".png")).toExternalForm()));
+                        dice2.setImage(new Image(Objects.requireNonNull(Main.class.getResource("images/dices/dice" + generatedPlateau.getDe2() + ".png")).toExternalForm()));
+                        positionAdeplacer = generatedPlateau.getPositionCourante() + deplacement;
+                        if (positionAdeplacer <= 99) {
+                            Button selectedButton = (Button) scene.lookup("#" + (positionAdeplacer + 1));
+                            selectedButton.getStyleClass().add("selectedButton");
+                            selectedButton.toFront();
+                        } else {
+                            positionAdeplacer = generatedPlateau.getPositionCourante() - (positionAdeplacer - 100);
+                            Button selectedButton = (Button) scene.lookup("#" + (positionAdeplacer + 1));
+                            selectedButton.getStyleClass().add("selectedButton");
+                        }
+
+
+                    }
+
+                    i++;
+
+                }
+            }));
+            timeline.setCycleCount(6);
+            timeline.play();
+
+            throwButton.setDisable(true);
 
         });
 
@@ -293,5 +343,32 @@ public class PlateauScene {
 
         return scene;
     }
+
+    public static void removePopUp(){
+        layout.getChildren().remove(2);
+        plateauContainer.setEffect(new GaussianBlur(0));
+    }
+
+    public static void addDefPopUp(){
+        popUpContainer = new StackPane(DefinitionPopUp.getDefinitionPopUp());
+        popUpContainer.setAlignment(Pos.CENTER);
+        popUpContainer.setPrefHeight(2000);
+        popUpContainer.setPrefWidth(2000);
+        layout.add(popUpContainer,1,0);
+        plateauContainer.setEffect(new GaussianBlur(30));
+    }
+    public static void addImgPopUp(){
+        popUpContainer = new StackPane(ImagePopUp.getImagePopUp());
+        popUpContainer.setAlignment(Pos.CENTER);
+        popUpContainer.setPrefHeight(2000);
+        popUpContainer.setPrefWidth(2000);
+        layout.add(popUpContainer,1,0);
+        plateauContainer.setEffect(new GaussianBlur(30));
+    }
+
+
+
+
+
 }
 

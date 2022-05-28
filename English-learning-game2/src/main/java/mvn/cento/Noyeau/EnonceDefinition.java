@@ -2,28 +2,20 @@ package mvn.cento.Noyeau;
 
 import java.io.Serializable;
 
-public class EnonceDefinition implements Serializable {
+public class EnonceDefinition{
 
     private  String question ;
-    private  String[]  reponses = new String[4];
+    private String reponse;
 
-    private int indiceBonneReponse ;
 
-    public EnonceDefinition(String question , String[] reponses , int indiceBonneReponse) {
+    public EnonceDefinition(String question , String reponse ) {
         this.question = question;
-        this.reponses = reponses;
-        this.indiceBonneReponse = indiceBonneReponse;
+        this.reponse = reponse;
     }
 
     public String getQuestion() {
         return question;
     }
+    public String getReponse(){return reponse;}
 
-    public String[] getReponses() {
-        return reponses;
-    }
-
-    public int getIndiceBonneReponse() {
-        return indiceBonneReponse;
-    }
 }

@@ -23,9 +23,9 @@ public class CaseDefinition extends Case{
 
         System.out.println("Traitement d'une case de definition :\n"+enonce.getQuestion());
         Scanner input = new Scanner(System.in);
-        int indiceSelectione = input.nextInt();
+        String  reponse = input.nextLine();
 
-        if(indiceSelectione == this.enonce.getIndiceBonneReponse()){
+        if(reponse.equals(enonce.getQuestion())){
 
             //reponse juste
             System.out.println("Reponse juste");

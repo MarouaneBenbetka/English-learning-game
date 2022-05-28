@@ -2,8 +2,7 @@
     -fx-background-image: url("../images/backgroundPattern.png");
     -fx-background-position: center center;
     -fx-background-size: cover;
-    -fx-background-color: rgba(81, 43, 238, 0.4);;
-
+    -fx-background-color: rgba(81, 43, 238, 0.4);
 }
 
 #plateau .button{
@@ -14,13 +13,13 @@
 
 #plateau .label{
     -fx-opacity: .8;
+    -fx-font-size: 10;
 }
 
 #plateau .button:hover{
-    -fx-opacity: .8;
+    -fx-opacity: .6;
     -fx-cursor: hand;
-/*    -fx-border-width: 3px;
-    -fx-border-color: #8bffff;*/
+    -fx-border-width: 2;
 }
 
 #plateau .selectedButton{
@@ -87,28 +86,45 @@
 
 
 .bonusCase{
-    -fx-background-color: #a0eea0;
+    -fx-background-color: #72ff72;
     -fx-opacity: 1;
+
+    -fx-background-image: url("../images/casesIcons/stars.png");
+    -fx-background-position: center center;
+    -fx-background-size:  cover;
 }
 
 .malusCase{
-    -fx-background-color: #ea9898;
+    -fx-background-color: #ff5b5b;
     -fx-opacity: 1;
+    -fx-background-image: url("../images/casesIcons/danger.png");
+    -fx-background-position: center center;
+    -fx-background-size:  cover;
 }
 
 .questionDefCase{
-    -fx-background-color: #95c5ea;
+    -fx-background-color: #64d1de;
     -fx-opacity: 1;
+
+    -fx-background-image: url("../images/casesIcons/question.png");
+    -fx-background-position: center center;
+    -fx-background-size:  cover;
 }
 
 .questionImgCase{
-    -fx-background-color: #f1a4dd;
+    -fx-background-color: #a479fd;
     -fx-opacity: 1;
+    -fx-background-image: url("../images/casesIcons/question.png");
+    -fx-background-position: center center;
+    -fx-background-size:  cover;
 }
 
 .sautCase{
-    -fx-background-color: #f1b7a0;
+    -fx-background-color: #ffa86d;
     -fx-opacity: 1;
+    -fx-background-image: url("../images/casesIcons/teleport.png");
+    -fx-background-position: center center;
+    -fx-background-size:  cover;
 }
 
 .parcourCase{
@@ -117,8 +133,10 @@
 }
 
 .departCase{
-    -fx-background-color: #efeda7;
+    -fx-background-color: #fffa55;
     -fx-opacity: 1;
+
+
 }
 
 .finCase{
@@ -128,6 +146,104 @@
 }
 
 
+.errorMessage{
+    -fx-font-family: "Montserrat" ;
+    -fx-font-size: 24;
+    -fx-fill: #ec3636;
+    -fx-font-weight: 700;
+}
+
+#defPopUp{
+
+    -fx-border-width: 4;
+    -fx-border-color: #512BEE;
+    -fx-background-image: url("../images/img.png");
+    -fx-background-position: center center;
+    -fx-background-size: cover;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-background-color: rgb(216, 212, 255);
 
 
+}
+
+
+.popUpTitle{
+    -fx-font-size: 30;
+    -fx-fill: #512BEE;
+    -fx-font-weight: 800;
+}
+
+.popUpTxt{
+    -fx-font-size: 22;
+    -fx-fill: #2f2e2e;
+    -fx-font-weight: 700;
+}
+
+.ImageContainer{
+    -fx-border-width: 2;
+    -fx-border-color: white;
+    -fx-border-radius: 10;
+    -fx-shape: "M185.001 2.99989H14.0007C3.00067 4.5 3.0006 15.6665 3.00067 17.9999C1.66734 55.6666 3.00118 131.231 3.00067 137C2.9998 147 10.5 150 14.0007 150H185.001C196.201 146.8 199.667 136 200.001 131V17.9999C200.501 4 188.334 2.66656 185.001 2.99989Z";
+}
+
+.ImageContainer:hover{
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-cursor: hand;
+}
+
+.WordContainer{
+    -fx-border-width: 1;
+    -fx-background-color: white;
+
+    -fx-border-color: #512BEE;
+    -fx-border-radius: 10;
+    -fx-shape: "M185.001 2.99989H14.0007C3.00067 4.5 3.0006 15.6665 3.00067 17.9999C1.66734 55.6666 3.00118 131.231 3.00067 137C2.9998 147 10.5 150 14.0007 150H185.001C196.201 146.8 199.667 136 200.001 131V17.9999C200.501 4 188.334 2.66656 185.001 2.99989Z";
+}
+.WordContainer:hover{
+ -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-cursor: hand;
+}
+
+.black-txt{
+    -fx-font-family: "Montserrat" ;
+    -fx-font-size: 22;
+    -fx-fill: balck;
+    -fx-font-weight: 700;
+}
+
+#word-input{
+
+    -fx-text-fill: black;
+    -fx-font-size: 26;
+    -fx-font-weight: 700;
+    -fx-border-width: 2;
+    -fx-border-radius: 4;
+    -fx-background-color: rgba(255, 255, 255, 0.4);
+    -fx-background-radius: 4;
+    -fx-border-color: black;
+}
+
+#hint{
+    -fx-fill: #512BEE;
+}
+
+.purpuleButton{
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-background-color: transparent;
+    -fx-border-color: #512BEE;
+    -fx-border-width: 2;
+    -fx-text-fill: #512BEE;
+    -fx-font-size: 18;
+    -fx-font-weight: 700;
+}
+
+.purpuleButton:hover{
+    -fx-cursor: hand;
+    -fx-background-color: #512BEE;
+    -fx-text-fill: white;
+}
 
