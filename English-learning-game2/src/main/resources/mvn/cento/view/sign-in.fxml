@@ -20,7 +20,7 @@
                <children>
                   <ImageView fitHeight="32.0" fitWidth="117.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/Group%208093.png" />
+                        <Image url="@../images/logo2.png" />
                      </image>
                   </ImageView>
                </children>
@@ -136,7 +136,7 @@
             </Text>
             <ImageView fitHeight="124.0" fitWidth="178.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../images/7c2022ae9ffb07075ccca519dcc46a54%201.png" />
+                  <Image url="@../images/dice.png" />
                </image>
                <VBox.margin>
                   <Insets top="25.0" />
