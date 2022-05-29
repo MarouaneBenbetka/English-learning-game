@@ -6,9 +6,11 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.effect.GaussianBlur;
@@ -31,6 +33,7 @@ public class PlateauScene {
 
     private static int deplacement;
     private static int positionAdeplacer;
+    private static int lastPosition =1;
     private static GridPane layout = new GridPane();
     private static GridPane plateauContainer = new GridPane();
     private static StackPane popUpContainer ;
@@ -42,9 +45,16 @@ public class PlateauScene {
 
 
         AnchorPane plateau = plateauFXML.load();
+
         plateau.setScaleX(1.3);
         plateau.setScaleY(0.99);
+
+
+
+
         plateauContainer.getChildren().add( plateau);
+
+
         plateauContainer.setAlignment(Pos.CENTER);
         plateauContainer.setPrefWidth(2000);
 
@@ -201,7 +211,22 @@ public class PlateauScene {
 
         // BonusCase.setGraphic(bonusIcon);
         for (int i = 0 ; i< 100 ; i++){
-            Button casePlateau =(Button) plateau.getChildren().get(i);
+
+            Pane pionPane = (Pane) plateau.lookup("#"+(i+1)+"_");
+            //pionPane.getStyleClass().addAll("gg");
+
+            ImageView pionContainer = new ImageView(new Image(Main.class.getResource("images/pion.png").toExternalForm()));
+            pionContainer.setFitHeight(36);
+            pionContainer.setFitWidth(36);
+            pionPane.getChildren().add(pionContainer);
+
+            if(i!= 0){
+                pionPane.toBack();
+                pionPane.getStyleClass().add("invisible");
+            }
+
+
+            Button casePlateau =(Button) plateau.lookup("#"+(i+1));
             switch (generatedPlateau.getCaseParPosition(i).getCouleur()){
                 case ROUGE ->{
 
@@ -235,8 +260,22 @@ public class PlateauScene {
             casePlateau.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
                 Button button = casePlateau;
                 try{
+
                     int pos =  Integer.parseInt(button.getId()) -1 ;
+
+                    lastPosition=generatedPlateau.getPositionCourante()+1;
                     generatedPlateau.positioner(pos,positionAdeplacer );
+
+/*                    Pane pion = (Pane) plateau.lookup("#"+(pos+1)+"_");
+                    pion.getStyleClass().remove("invisible");
+                    pion.toFront();
+
+
+                    Pane previousPion = (Pane) plateau.lookup("#"+lastPosition+"_");
+                    previousPion.getStyleClass().add("invisible");
+                    previousPion.toBack();*/
+
+
                     button.getStyleClass().remove("selectedButton");
                     button.toBack();
                     errorMessage.setVisible(false);
@@ -257,6 +296,7 @@ public class PlateauScene {
                         positionAdeplacer= generatedPlateau.getPositionCourante();
                         couleurCase = generatedPlateau.getCaseParPosition(positionAdeplacer).getCouleur() ;
                         position.setText("Position : "+ (positionAdeplacer + 1));
+
                         if(couleurCase == Couleur.ROSE){
                            addImgPopUp();
                         }else if(couleurCase == Couleur.BLEU){
@@ -265,6 +305,18 @@ public class PlateauScene {
                             generatedPlateau.getCaseParPosition(positionAdeplacer).traiter(partie);
 
                         }
+
+                        Pane previousPion = (Pane) plateau.lookup("#"+lastPosition+"_");
+                        previousPion.getStyleClass().add("invisible");
+                        previousPion.toBack();
+
+                        Pane pion = (Pane) plateau.lookup("#"+(generatedPlateau.getPositionCourante()+1)+"_");
+                        pion.getStyleClass().remove("invisible");
+                        pion.toFront();
+                        lastPosition=positionAdeplacer+1;
+
+
+
                         score.setText("Total Score : "+partie.getScore());
 
                     } while (generatedPlateau.getPositionCourante() != positionAdeplacer);
@@ -335,6 +387,7 @@ public class PlateauScene {
             timeline.play();
 
             throwButton.setDisable(true);
+
 
         });
 
