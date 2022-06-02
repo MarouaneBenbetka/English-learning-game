@@ -1,8 +1,9 @@
 package mvn.cento.Noyeau;
 
+import java.io.Serializable;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class De {
+public class De implements Serializable {
     private int numero  ;
 
     public int lancerDe(){
@@ -12,7 +13,6 @@ public class De {
 
 
     public int getNumero(){return numero;}
-    public void setNumero(int numero){this.numero = numero;}
 
 
 }

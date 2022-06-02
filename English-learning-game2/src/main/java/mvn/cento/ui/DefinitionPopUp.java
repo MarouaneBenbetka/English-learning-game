@@ -14,13 +14,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import mvn.cento.Main;
+import mvn.cento.Noyeau.CaseDefinition;
+import mvn.cento.Noyeau.EnonceDefinition;
 
 import java.util.Objects;
 import java.util.Stack;
 
 public class DefinitionPopUp {
 
-    public static String rightAnswer="holaad" ;
+    public static EnonceDefinition enonceDefinition ;
 
     public static GridPane getDefinitionPopUp(){
 
@@ -34,7 +36,7 @@ public class DefinitionPopUp {
 
         Text popUpTitle = new Text("Guess the right word :");
         popUpTitle.getStyleClass().add("popUpTitle");
-        Text definition = new Text("This is a tool to play with other  bla bala abdsfljasdlasdhflasdf");
+        Text definition = new Text(enonceDefinition.getQuestion());
         definition.getStyleClass().add("popUpTxt");
         definition.setWrappingWidth(width-60);
 
@@ -48,10 +50,10 @@ public class DefinitionPopUp {
         TextField answer = new TextField();
         answer.setId("word-input");
         answer.setAlignment(Pos.CENTER);
-        answer.setMaxWidth(rightAnswer.length()*30);
+        answer.setMaxWidth(enonceDefinition.getReponse().length()*30);
         answer.setPromptText("here");
 
-        int maxLength = rightAnswer.length();
+        int maxLength = enonceDefinition.getReponse().length();
 
         answer.textProperty().addListener(new ChangeListener<String>() {
             public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
@@ -72,6 +74,15 @@ public class DefinitionPopUp {
         Button submitButton = new Button("submit");
         submitButton.getStyleClass().add("purpuleButton");
         submitButton.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
+            String textFiledAnswer = answer.getText();
+            int lastPos = PlateauScene.getPartie().getPlateau().getPositionCourante()+1 ;
+            boolean res =  ((CaseDefinition)PlateauScene.getPartie().getPlateau().getCaseCourante()).verifyerReponse(textFiledAnswer);
+            PlateauScene.getPartie().getPlateau().getCaseCourante().traiter(PlateauScene.getPartie());
+            if(res ){
+                PlateauScene.movePion(lastPos ,PlateauScene.getPartie().getPlateau().getPositionCourante()+1  );
+            }else{
+                PlateauScene.setScore(PlateauScene.getPartie().getScore());
+            }
             PlateauScene.removePopUp();
         });
 
@@ -93,5 +104,10 @@ public class DefinitionPopUp {
         gridPane.setMaxWidth(width);
         gridPane.setMaxHeight(height);
         return gridPane;
+    }
+
+
+    public static void setEnonceDefinition(EnonceDefinition enonceDefinition){
+        DefinitionPopUp.enonceDefinition = enonceDefinition;
     }
 }

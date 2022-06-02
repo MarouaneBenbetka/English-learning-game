@@ -1,6 +1,8 @@
 package mvn.cento.Noyeau;
 
-public abstract class Case {
+import java.io.Serializable;
+
+public abstract class Case implements Serializable {
 
     private Couleur couleur  ;
 

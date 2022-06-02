@@ -2,7 +2,7 @@ package mvn.cento.Noyeau;
 
 import java.io.Serializable;
 
-public class EnonceDefinition{
+public class EnonceDefinition implements Serializable{
 
     private  String question ;
     private String reponse;

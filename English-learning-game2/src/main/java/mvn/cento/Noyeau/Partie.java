@@ -1,9 +1,8 @@
 package mvn.cento.Noyeau;
-
 import mvn.cento.Noyeau.Exceptions.positionInvalideException;
-
 import java.io.*;
 import java.util.Scanner;
+
 
 
 public class Partie implements Serializable {
@@ -20,7 +19,8 @@ public class Partie implements Serializable {
 
     public void sauvgarderPartie() {
         try{
-            FileOutputStream fos  = new FileOutputStream("./src/Donnes/Parties/"+joueur.getNom());
+
+            FileOutputStream fos  = new FileOutputStream("./src/main/resources/parties/"+joueur.getNom());
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(this);
             oos.close();
@@ -29,25 +29,25 @@ public class Partie implements Serializable {
         }
     }
 
-    public void chargerAncienPartie(){
-        try{
-            FileInputStream fis = new FileInputStream("./src/Donnes/Parties/"+joueur.getNom());
+
+    public void chargerAncienPartie() throws IOException, ClassNotFoundException {
+
+
+            FileInputStream fis =  new FileInputStream("./src/main/resources/parties/"+joueur.getNom());
             ObjectInputStream ois = new ObjectInputStream(fis);
+
             Partie partie = (Partie) ois.readObject();
             this.plateau = partie.plateau;
             this.score = partie.score;
             this.finPartie = partie.finPartie;
             ois.close();
-        }catch (Exception e){ //@Todo
-            System.out.println(e.getMessage());
-        }
+
     }
 
 
     public void creerPartie(){
         plateau = new Plateau();
         score = 0 ;
-
     }
 
 
@@ -56,12 +56,12 @@ public class Partie implements Serializable {
 
 
     public void lancerPartie(){
-
         int deplacement ;
 
         finPartie = false;
         while(!finPartie){
 
+            sauvgarderPartie();
             deplacement = plateau.lancerDes();
             System.out.println("Deplacement ="+deplacement);
 

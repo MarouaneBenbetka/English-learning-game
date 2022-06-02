@@ -44,8 +44,7 @@ public class Joueur  implements Comparable<Joueur> , Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Joueur)) return false;
-        Joueur joueur = (Joueur) o;
+        if (!(o instanceof Joueur joueur)) return false;
         return nom.equals(joueur.nom);
     }
 
@@ -58,10 +57,8 @@ public class Joueur  implements Comparable<Joueur> , Serializable {
     public String getNom() {
         return nom;
     }
+    public void setMeilleurScore(int meilleurScore){ this.meilleurScore = meilleurScore;}
 
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
 
     @Override
     public int compareTo(Joueur joueur) {

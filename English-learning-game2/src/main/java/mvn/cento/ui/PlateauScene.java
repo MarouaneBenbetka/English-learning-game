@@ -6,11 +6,9 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Bounds;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.effect.GaussianBlur;
@@ -21,10 +19,8 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import mvn.cento.Main;
-import mvn.cento.Noyeau.Couleur;
+import mvn.cento.Noyeau.*;
 import mvn.cento.Noyeau.Exceptions.positionInvalideException;
-import mvn.cento.Noyeau.Partie;
-import mvn.cento.Noyeau.Plateau;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -34,17 +30,31 @@ public class PlateauScene {
     private static int deplacement;
     private static int positionAdeplacer;
     private static int lastPosition =1;
-    private static GridPane layout = new GridPane();
-    private static GridPane plateauContainer = new GridPane();
+    private static final GridPane layout = new GridPane();
+    private static final GridPane plateauContainer = new GridPane();
     private static StackPane popUpContainer ;
+    private static AnchorPane plateau;
+    private static Plateau generatedPlateau;
+    private static final Text usefullMessage = new Text();
+    private static  Text caseType;
+    private static Text position;
+    private static Text score;
+    private static Button throwButton;
+
+
+
+    private static Partie partie;
+
+    private static int idButton = 1;
 
     public static Scene getPlateauScene(Partie partie) throws IOException {
 
-        Plateau generatedPlateau = partie.getPlateau();
+        PlateauScene.partie = partie;
+        generatedPlateau = partie.getPlateau();
         FXMLLoader plateauFXML = new FXMLLoader(Main.class.getResource("view/home.fxml"));
 
 
-        AnchorPane plateau = plateauFXML.load();
+        plateau = plateauFXML.load();
 
         plateau.setScaleX(1.3);
         plateau.setScaleY(0.99);
@@ -68,7 +78,6 @@ public class PlateauScene {
         sideBar.setPrefHeight(1500);
         sideBar.setAlignment(Pos.TOP_CENTER);
 
-
         //user Data box
         VBox userData = new VBox();
         userData.setId("userDataBox");
@@ -81,7 +90,7 @@ public class PlateauScene {
         Region icon = new Region();
         icon.setId("UserIcon");
         Text text = new Text();
-        text.setText("Marouane");
+        text.setText(partie.getJoueur().getNom());
         text.getStyleClass().add("white-text");
         userAccount.getChildren().add(icon);
         userAccount.getChildren().add(text);
@@ -96,7 +105,7 @@ public class PlateauScene {
         icon = new Region();
         icon.setId("CupIcon");
         text = new Text();
-        text.setText("9,325");
+        text.setText(String.valueOf(partie.getJoueur().getMeilleurScore()) );
         text.getStyleClass().add("white-text");
         userBestScore.getChildren().add(icon);
         userBestScore.getChildren().add(text);
@@ -110,28 +119,49 @@ public class PlateauScene {
 
         VBox infos = new VBox();
         infos.setAlignment(Pos.CENTER_LEFT);
-        Text score = new Text();
+        score = new Text();
 
-        score.setText("Total Score : 0");
+        score.setText("Total Score : "+partie.getScore());
         score.getStyleClass().add("white-text");
         infos.getChildren().add(score);
-        Text position = new Text();
-        position.setText("Postion : 1");
+        position = new Text();
+        position.setText("Postion : "+(partie.getPlateau().getPositionCourante()+1));
         position.getStyleClass().add("white-text");
         infos.getChildren().add(position);
-        Text caseType = new Text();
-        caseType.setText("Case : Start");
+        caseType = new Text();
+        switch (partie.getPlateau().getCaseCourante().getCouleur()){
+            case ROUGE -> caseType.setText("Case : Penalty");
+            case JAUNE -> caseType.setText("Case : Start");
+            case ORANGE -> caseType.setText("Case : Jump");
+            case VERT -> caseType.setText("Case : Bonus");
+            case ROSE, BLEU -> caseType.setText("Case : Question");
+            case NOIR -> caseType.setText("Case : End");
+            case BLANC -> caseType.setText("Case : Normal");
+        }
         caseType.getStyleClass().add("white-text");
         infos.getChildren().add(caseType);
+
+
+        usefullMessage.getStyleClass().add("small-txt");
+        usefullMessage.setText("+10pts , move forward by 2 positions");
+        usefullMessage.setWrappingWidth(250);
+        usefullMessage.setVisible(false);
+        infos.getChildren().add(usefullMessage);
+
+
         Text errorMessage = new Text();
         errorMessage.setText("Incorrect position");
         errorMessage.getStyleClass().add("errorMessage");
         errorMessage.setVisible(false);
         infos.getChildren().add(errorMessage);
 
+
+
         VBox.setMargin(score ,new Insets(2,8,2,8));
         VBox.setMargin(position ,new Insets(2,8,2,8));
         VBox.setMargin(caseType ,new Insets(2,8,2,8));
+        VBox.setMargin(usefullMessage ,new Insets(2,8,2,8));
+
         VBox.setMargin(errorMessage ,new Insets(24,8,2,8));
 
         GridPane.setMargin(infos,new Insets(80,30,10,30));
@@ -164,12 +194,14 @@ public class PlateauScene {
         HBox.setMargin(dice2,new Insets(4,16,4,16));
 
 
-        Button throwButton = new Button();
+         throwButton = new Button();
 
         throwButton.setId("throwButton");
         throwButton.setPrefWidth(100);
         throwButton.setText("Roll");
         VBox.setMargin(throwButton,new Insets(20,2,10,2));
+
+        throwButton.setDisable(partie.getFinPartie());
 
         dices.getChildren().add(dicesImages);
         dices.getChildren().add(throwButton);
@@ -215,12 +247,12 @@ public class PlateauScene {
             Pane pionPane = (Pane) plateau.lookup("#"+(i+1)+"_");
             //pionPane.getStyleClass().addAll("gg");
 
-            ImageView pionContainer = new ImageView(new Image(Main.class.getResource("images/pion.png").toExternalForm()));
+            ImageView pionContainer = new ImageView(new Image(Objects.requireNonNull(Main.class.getResource("images/pion.png")).toExternalForm()));
             pionContainer.setFitHeight(36);
             pionContainer.setFitWidth(36);
             pionPane.getChildren().add(pionContainer);
 
-            if(i!= 0){
+            if(i!= partie.getPlateau().getPositionCourante()){
                 pionPane.toBack();
                 pionPane.getStyleClass().add("invisible");
             }
@@ -228,27 +260,16 @@ public class PlateauScene {
 
             Button casePlateau =(Button) plateau.lookup("#"+(i+1));
             switch (generatedPlateau.getCaseParPosition(i).getCouleur()){
-                case ROUGE ->{
-
-                    casePlateau.getStyleClass().add("malusCase");
-                }
-                case VERT -> {
-                    casePlateau.getStyleClass().add("bonusCase");
-                }
+                case ROUGE -> casePlateau.getStyleClass().add("malusCase");
+                case VERT -> casePlateau.getStyleClass().add("bonusCase");
                 case JAUNE -> {
                     casePlateau.getStyleClass().add("departCase");
                     casePlateau.setText("Start");
                 }
-                case BLEU -> {
-                    casePlateau.getStyleClass().add("questionDefCase");
-                }
+                case BLEU -> casePlateau.getStyleClass().add("questionDefCase");
 
-                case ROSE -> {
-                    casePlateau.getStyleClass().add("questionImgCase");
-                }
-                case ORANGE -> {
-                    casePlateau.getStyleClass().add("sautCase") ;
-                }
+                case ROSE -> casePlateau.getStyleClass().add("questionImgCase");
+                case ORANGE -> casePlateau.getStyleClass().add("sautCase") ;
                 case BLANC -> casePlateau.getStyleClass().add("parcourCase");
                 case NOIR -> {
                     casePlateau.getStyleClass().add("finCase");
@@ -258,75 +279,52 @@ public class PlateauScene {
 
 
             casePlateau.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
-                Button button = casePlateau;
                 try{
 
-                    int pos =  Integer.parseInt(button.getId()) -1 ;
+                    int pos =  Integer.parseInt(casePlateau.getId()) -1 ;
+
 
                     lastPosition=generatedPlateau.getPositionCourante()+1;
                     generatedPlateau.positioner(pos,positionAdeplacer );
 
-/*                    Pane pion = (Pane) plateau.lookup("#"+(pos+1)+"_");
-                    pion.getStyleClass().remove("invisible");
-                    pion.toFront();
 
-
-                    Pane previousPion = (Pane) plateau.lookup("#"+lastPosition+"_");
-                    previousPion.getStyleClass().add("invisible");
-                    previousPion.toBack();*/
-
-
-                    button.getStyleClass().remove("selectedButton");
-                    button.toBack();
+                    casePlateau.getStyleClass().remove("selectedButton");
+                    casePlateau.toBack();
                     errorMessage.setVisible(false);
 
-                    Couleur couleurCase = generatedPlateau.getCaseParPosition(positionAdeplacer).getCouleur() ;
+                    Couleur couleurCase = generatedPlateau.getCaseParPosition(pos).getCouleur() ;
                     switch (couleurCase){
-                        case BLANC -> caseType.setText("Case : Normal");
-                        case NOIR -> caseType.setText("Case : End");
-                        case ROSE, BLEU -> caseType.setText("Case : Question");
-                        case VERT -> caseType.setText("Case : Bonus");
-                        case ORANGE -> caseType.setText("Case : Jump");
-                        case JAUNE -> caseType.setText("Case : Start");
-                        case ROUGE -> caseType.setText("Case : Penalty");
-                    }
-
-                    do {
-
-                        positionAdeplacer= generatedPlateau.getPositionCourante();
-                        couleurCase = generatedPlateau.getCaseParPosition(positionAdeplacer).getCouleur() ;
-                        position.setText("Position : "+ (positionAdeplacer + 1));
-
-                        if(couleurCase == Couleur.ROSE){
-                           addImgPopUp();
-                        }else if(couleurCase == Couleur.BLEU){
-                            addDefPopUp();
-                        }else {
-                            generatedPlateau.getCaseParPosition(positionAdeplacer).traiter(partie);
-
+                        case BLANC -> {
+                            caseType.setText("Case : Normal");
+                            usefullMessage.setVisible(false);
                         }
-
-                        Pane previousPion = (Pane) plateau.lookup("#"+lastPosition+"_");
-                        previousPion.getStyleClass().add("invisible");
-                        previousPion.toBack();
-
-                        Pane pion = (Pane) plateau.lookup("#"+(generatedPlateau.getPositionCourante()+1)+"_");
-                        pion.getStyleClass().remove("invisible");
-                        pion.toFront();
-                        lastPosition=positionAdeplacer+1;
-
-
-
-                        score.setText("Total Score : "+partie.getScore());
-
-                    } while (generatedPlateau.getPositionCourante() != positionAdeplacer);
-
-                    if(partie.getFinPartie()){
-                        throwButton.setDisable(true);
-                    }else {
-                        throwButton.setDisable(false);
+                        case NOIR -> {
+                            caseType.setText("Case : End");
+                            usefullMessage.setVisible(true);
+                            usefullMessage.setText("Game Over");
+                        }
+                        case ROSE, BLEU -> caseType.setText("Case : Question");
+                        case VERT -> {
+                            caseType.setText("Case : Bonus");
+                            usefullMessage.setVisible(true);
+                            usefullMessage.setText("+10pts , move forward by 2 positions");
+                        }
+                        case ORANGE -> {
+                            caseType.setText("Case : Jump");
+                            usefullMessage.setVisible(true);
+                        }
+                        case JAUNE -> {
+                            caseType.setText("Case : Start");
+                            usefullMessage.setVisible(true);
+                            usefullMessage.setText("Back to start point");
+                        }
+                        case ROUGE -> {
+                            caseType.setText("Case : Penalty");
+                            usefullMessage.setVisible(true);
+                            usefullMessage.setText("-10pts , move backward by 2 positions");
+                        }
                     }
-
+                        movePion(lastPosition,generatedPlateau.getPositionCourante()+1 );
 
 
                 }catch (positionInvalideException e){
@@ -351,7 +349,9 @@ public class PlateauScene {
             }
 
 
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.2), new EventHandler<>() {
+
+
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.15), new EventHandler<>() {
 
                 private int i = 1;
 
@@ -371,7 +371,7 @@ public class PlateauScene {
                             selectedButton.getStyleClass().add("selectedButton");
                             selectedButton.toFront();
                         } else {
-                            positionAdeplacer = generatedPlateau.getPositionCourante() - (positionAdeplacer - 100);
+                            positionAdeplacer = generatedPlateau.getPositionCourante() - (positionAdeplacer - 99);
                             Button selectedButton = (Button) scene.lookup("#" + (positionAdeplacer + 1));
                             selectedButton.getStyleClass().add("selectedButton");
                         }
@@ -419,9 +419,191 @@ public class PlateauScene {
         plateauContainer.setEffect(new GaussianBlur(30));
     }
 
+    public static void addEndPopUp(){
+        popUpContainer = new StackPane(EndGamePopUp.getEndGamePopUp());
+        popUpContainer.setAlignment(Pos.CENTER);
+        popUpContainer.setPrefHeight(2000);
+        popUpContainer.setPrefWidth(2000);
+        layout.add(popUpContainer,1,0);
+
+
+        plateauContainer.setEffect(new GaussianBlur(30));
+
+
+    }
+
+
+    public static  void movePion(int start , int end) {
+        int dep = end - start;
+
+
+
+        if(generatedPlateau.getCaseParPosition(start -1).getCouleur()== Couleur.ORANGE){
+            Pane previousPion = (Pane) plateau.lookup("#"+start+"_");
+            previousPion.getStyleClass().add("invisible");
+            previousPion.toBack();
+
+            previousPion = (Pane) plateau.lookup("#"+end+"_");
+            previousPion.getStyleClass().remove("invisible");
+            previousPion.toFront();
+
+
+
+            traiterCaseEnInterface(end);
+            throwButton.setDisable(partie.getFinPartie());
+
+            lastPosition = end;
+
+            if(( lastPosition-1) != generatedPlateau.getPositionCourante()){
+                movePion(lastPosition,generatedPlateau.getPositionCourante()+1);
+            }
+
+        }
+
+        else {
+
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.1), new EventHandler<>() {
+
+                private int start2 = start;
+
+                @Override
+                public void handle(ActionEvent event) {
+
+                    if(dep > 0 && (start2) != end){
+
+
+                        Pane previousPion = (Pane) plateau.lookup("#"+start2+"_");
+                        previousPion.getStyleClass().add("invisible");
+                        previousPion.toBack();
+
+                        start2++;
+                        previousPion = (Pane) plateau.lookup("#"+start2+"_");
+                        previousPion.getStyleClass().remove("invisible");
+                        previousPion.toFront();
+
+
+                        if(start2 == end){
+                            traiterCaseEnInterface(end);
+                            throwButton.setDisable(partie.getFinPartie());
+
+
+
+                        }
+
+
+                    }else if(dep < 0 && (start2) != end){
+
+                        Pane previousPion = (Pane) plateau.lookup("#"+start2+"_");
+                        previousPion.getStyleClass().add("invisible");
+                        previousPion.toBack();
+
+                        start2--;
+                        previousPion = (Pane) plateau.lookup("#"+start2+"_");
+                        previousPion.getStyleClass().remove("invisible");
+                        previousPion.toFront();
+
+                        if(start2 == end){
+                            traiterCaseEnInterface(end);
+                            throwButton.setDisable(partie.getFinPartie());
+                        }
+
+                    }
+
+
+
+                }
+            }));
+
+            timeline.setCycleCount(Math.abs(dep) );
+            timeline.play();
+            lastPosition = end;
+            timeline.setOnFinished(e-> {
+                if(( lastPosition-1) != generatedPlateau.getPositionCourante()){
+                    movePion(lastPosition,generatedPlateau.getPositionCourante()+1);
+                }
+            });
+        }
+
+    }
+
+
+    public static void traiterCaseEnInterface(int pos){
+
+
+
+        positionAdeplacer= pos -1 ;
+        Couleur couleurCase = generatedPlateau.getCaseParPosition(positionAdeplacer).getCouleur() ;
+        switch (couleurCase){
+            case BLANC -> {
+                caseType.setText("Case : Normal");
+                usefullMessage.setVisible(false);
+            }
+            case NOIR -> {
+                caseType.setText("Case : End");
+                usefullMessage.setVisible(true);
+                usefullMessage.setText("Game Over");
+            }
+            case ROSE, BLEU -> caseType.setText("Case : Question");
+            case VERT -> {
+                caseType.setText("Case : Bonus");
+                usefullMessage.setVisible(true);
+                usefullMessage.setText("+10pts , move forward by 2 positions");
+            }
+            case ORANGE -> {
+                caseType.setText("Case : Jump");
+                usefullMessage.setVisible(true);
+            }
+            case JAUNE -> {
+                caseType.setText("Case : Start");
+                usefullMessage.setVisible(true);
+                usefullMessage.setText("Back to start point");
+            }
+            case ROUGE -> {
+                caseType.setText("Case : Penalty");
+                usefullMessage.setVisible(true);
+                usefullMessage.setText("-10pts , move backward by 2 positions");
+            }
+        }
 
 
 
 
+
+        couleurCase = generatedPlateau.getCaseParPosition(positionAdeplacer).getCouleur() ;
+        position.setText("Position : "+ (positionAdeplacer + 1));
+
+        if(couleurCase == Couleur.ROSE){
+            addImgPopUp();
+        }else if(couleurCase == Couleur.BLEU){
+            DefinitionPopUp.setEnonceDefinition (((CaseDefinition) generatedPlateau.getCaseParPosition(positionAdeplacer)).getEnonce());
+            addDefPopUp();
+        }else if(couleurCase == Couleur.NOIR){
+            addEndPopUp();
+            generatedPlateau.getCaseParPosition(positionAdeplacer).traiter(partie);
+            HomeScene.jeu.sauvgarderJoueurs();
+        }
+        else{
+
+            generatedPlateau.getCaseParPosition(positionAdeplacer).traiter(partie);
+            if(couleurCase == Couleur.ORANGE) {
+                usefullMessage.setText("Jump to position \""+(generatedPlateau.getPositionCourante()+1)+"\"");
+            }
+        }
+        partie.sauvgarderPartie();
+        score.setText("Total Score : "+partie.getScore());
+
+
+
+
+
+    }
+
+    public static Partie getPartie() {
+        return partie;
+    }
+
+    public static void setScore(int pts){
+        score.setText("Total Score : "+pts);
+    };
 }
 

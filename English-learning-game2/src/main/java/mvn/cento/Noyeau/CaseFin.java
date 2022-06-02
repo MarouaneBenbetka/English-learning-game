@@ -11,6 +11,7 @@ public class CaseFin extends Case{
 
         partie.getJoueur().majMeilleurScore(partie.getScore());
         partie.stopPartie();
+        partie.sauvgarderPartie();
 
     }
 }

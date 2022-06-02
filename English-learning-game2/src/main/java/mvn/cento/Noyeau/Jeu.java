@@ -3,25 +3,27 @@ package mvn.cento.Noyeau;
 import mvn.cento.Main;
 import mvn.cento.Noyeau.Exceptions.*;
 import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.*;
 
 public class Jeu {
 
     private Partie partie ;
-    private TreeMap<String, Joueur> joueurs = new TreeMap<>();
+    private HashMap<String, Joueur> joueurs = new HashMap<>();
 
 
     // listes des enonces qui vont etre generer a partir d'un ficher
-    public static Queue<EnonceDefinition> enonceDefinitions = new LinkedList<>();
-    public static Queue<EnonceImage> enonceImages = new LinkedList<>();
+    public static LinkedList<EnonceDefinition> enonceDefinitions = new LinkedList<>();
+    public static LinkedList<EnonceImage> enonceImages = new LinkedList<>();
 
 
     public Jeu(){
-        //sauvgarderJoueurs();
-       // sauvgarderQuestionsImage();
+
+        chargerComptes();
         chargerEnonceDefinitions();
         chargerEnonceImages();
-       // chargerComptes();
+
     }
 
 
@@ -35,14 +37,21 @@ public class Jeu {
         this.partie = new Partie(joueur);
     }
 
-    public void creerCompte(String nom, String motDePasse) throws utilisateurDejaExistantException {
+    public void creerCompte(String nom, String motDePasse , String motDePasse2) throws utilisateurDejaExistantException , confirmMotDePasseException , nomUtilisateurVideException , confirmMotDePasseVideException, motDePasseVideException {
 
+        if(nom.replace(" ","").equals("")) throw new nomUtilisateurVideException();
+
+        if(motDePasse.equals("")) throw  new motDePasseVideException();
+        if(motDePasse2.equals("")) throw  new confirmMotDePasseVideException();
         if (joueurs.containsKey(nom)) throw new utilisateurDejaExistantException();
+
+        if(!motDePasse.equals(motDePasse2)) throw new confirmMotDePasseException() ;
 
         Joueur joueur = new Joueur(nom, motDePasse);
         joueurs.put(nom, joueur);
 
         this.partie = new Partie(joueur);
+        sauvgarderJoueurs();
 
     }
 
@@ -74,7 +83,7 @@ public class Jeu {
 
            }
 
-        Collections.shuffle((LinkedList) enonceDefinitions);
+        Collections.shuffle(enonceDefinitions);
            for (EnonceDefinition a : enonceDefinitions){
                System.out.println(a.getQuestion() + "/"+a.getReponse());
            }
@@ -104,7 +113,7 @@ public class Jeu {
                 enonceImages.add(new EnonceImage(question,reponses,bonneReponse));
             }
         }
-        Collections.shuffle((LinkedList) enonceImages);
+        Collections.shuffle(enonceImages);
         for (EnonceImage a : enonceImages){
             System.out.println(a.getQuestion() +"/"+a.getIndiceBonneReponse());
         }
@@ -114,12 +123,30 @@ public class Jeu {
     public void chargerComptes(){
 
         try {
-            FileInputStream fis = new FileInputStream("./src/Donnes/comptes");
+
+
+            URL resourceUrl = Main.class.getResource("data/comptes");
+
+            File file = new File(resourceUrl.toURI());
+
+            FileInputStream fis =  new FileInputStream(file);
+
             ObjectInputStream ois = new ObjectInputStream(fis);
-            joueurs = (TreeMap<String, Joueur> ) ois.readObject();
+            joueurs = (HashMap<String, Joueur> ) ois.readObject();
+
+            for(Map.Entry<String,Joueur> entry : joueurs.entrySet()) {
+                String key = entry.getKey();
+                Joueur value = entry.getValue();
+
+                System.out.println(key + " => " + value);
+            }
+
+
             ois.close();
         }catch (IOException | ClassNotFoundException e){
             System.out.println(e.getMessage());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
 
 
@@ -129,6 +156,29 @@ public class Jeu {
     public void sauvgarderPartie(){}
 
     public void sauvgarderJoueurs(){
+
+        /*
+
+        Joueur marouane = new Joueur("Marouane","111"  );
+        marouane.setMeilleurScore(201);
+        joueurs.put("Marouane" ,marouane );
+        Joueur islam =  new Joueur("Islam","111"  );
+        islam.setMeilleurScore(1);
+        joueurs.put("Islam" , islam);
+        joueurs.put("Raid" , new Joueur("Raid","111"  ));
+        joueurs.put("Houssam" , new Joueur("Houssam","111"  ));
+*/
+
+        try {
+            URL resourceUrl = Main.class.getResource("data/comptes");
+            File file = new File(resourceUrl.toURI());
+            FileOutputStream fos =  new FileOutputStream(file)  ;
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(joueurs);
+            oos.close();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
 
     }
 

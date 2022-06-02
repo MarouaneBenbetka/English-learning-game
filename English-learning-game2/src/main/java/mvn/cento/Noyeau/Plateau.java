@@ -2,9 +2,10 @@ package mvn.cento.Noyeau;
 
 import mvn.cento.Noyeau.Exceptions.*;
 
+import java.io.Serializable;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Plateau {
+public class Plateau implements Serializable {
 
     private final Case[] cases = new Case[100];
     private final De[] des = {new De() , new De()};
@@ -49,9 +50,17 @@ public class Plateau {
 
                 }while( nbCaseParType[caseType] == 0);
 
-                nbCaseParType[caseType]--;
-                lastSpecialCasePosition=i;
-                lastSpecialCaseType = caseType;
+                if(caseType == 1 && posInsideGroupe==1){
+                    posInsideGroupe++;
+                    caseType = 5 ;
+                }else{
+                    nbCaseParType[caseType]--;
+                    lastSpecialCasePosition=i;
+                    lastSpecialCaseType = caseType;
+                }
+
+
+
 
             }else {
                 caseType = 5;

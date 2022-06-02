@@ -2,7 +2,7 @@ package mvn.cento.Noyeau;
 
 import java.io.Serializable;
 
-public class EnonceImage {
+public class EnonceImage implements Serializable {
 
     private final String question ;
     private  String[]  imagesUrl = new String[4];

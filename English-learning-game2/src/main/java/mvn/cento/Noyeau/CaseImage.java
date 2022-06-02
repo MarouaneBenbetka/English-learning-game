@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class CaseImage extends Case{
 
     private EnonceImage enonce;
+    private  boolean result ;
 
     private final static int POINTS_PLUS = 20;
     private final static int DEPLACEMENT = 2 ;
@@ -15,25 +16,26 @@ public class CaseImage extends Case{
 
     @Override
     public void traiter(Partie partie) {
-        this.enonce =  Jeu.enonceImages.poll();
-        Jeu.enonceImages.add(this.enonce);
 
-        System.out.println("Traitement d'une case d'image :\n"+enonce.getQuestion());
-
-        Scanner input = new Scanner(System.in);
-        int indiceSelectione = input.nextInt();
-
-        if(indiceSelectione == this.enonce.getIndiceBonneReponse()){
-
-            //reponse juste
-            System.out.println("Reponse juste");
+        if(result){
             partie.ajouterPoints(POINTS_PLUS);
             partie.getPlateau().deplacer(DEPLACEMENT);
-        }else {
-            //reponse false
-            System.out.println("Reponse fausse");
         }
 
 
     }
+
+    public EnonceImage getEnonce() {
+        this.enonce =  Jeu.enonceImages.poll();
+        Jeu.enonceImages.add(this.enonce);
+        return enonce;
+    }
+
+
+    public boolean verifyerReponse(int index){
+        result = enonce.getIndiceBonneReponse() == index ;
+        return  result;
+    }
+
+
 }

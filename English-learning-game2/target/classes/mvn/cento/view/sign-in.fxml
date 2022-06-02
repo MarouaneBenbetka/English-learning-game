@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mvn.cento.controllers.signInController">
+<HBox id="container" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mvn.cento.controllers.signInController">
    <children>
       <BorderPane minHeight="400.0" minWidth="500.0">
          <top>
@@ -30,28 +30,29 @@
             </VBox>
          </top>
          <center>
-            <VBox alignment="CENTER" BorderPane.alignment="CENTER">
+            <VBox id="dataVbox" alignment="CENTER" prefHeight="551.0" prefWidth="477.0" BorderPane.alignment="CENTER">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Let's get you started">
+                  <Text id="getStarted" strokeType="OUTSIDE" strokeWidth="0.0" text="Let's get you started" wrappingWidth="480.0">
                      <font>
-                        <Font name="System Bold" size="21.0" />
+                        <Font name="System Bold" size="24.0" />
                      </font>
                   </Text>
-                  <VBox>
+                  <VBox prefHeight="69.0" prefWidth="479.0">
                      <children>
                         <Text fill="#404040" strokeType="OUTSIDE" strokeWidth="0.0" text="User Name">
                            <font>
-                              <Font name="System Bold" size="15.0" />
+                              <Font name="System" size="18.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="userNameTextField" promptText="Username">
+                        <TextField fx:id="userNameTextField" prefHeight="38.0" prefWidth="395.0" promptText="Username">
                            <VBox.margin>
-                              <Insets top="20.0" />
+                              <Insets top="8.0" />
                            </VBox.margin>
                            <padding>
                               <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
                            </padding>
                         </TextField>
+                        <Text fx:id="userNameErrorSignIn" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="User name does not exists" />
                      </children>
                      <VBox.margin>
                         <Insets top="10.0" />
@@ -61,17 +62,18 @@
                      <children>
                         <Text fill="#404040" strokeType="OUTSIDE" strokeWidth="0.0" text="Password">
                            <font>
-                              <Font name="System Bold" size="15.0" />
+                              <Font name="System" size="18.0" />
                            </font>
                         </Text>
                         <PasswordField fx:id="passwordTextField" promptText="Password">
                            <VBox.margin>
-                              <Insets top="10.0" />
+                              <Insets top="8.0" />
                            </VBox.margin>
                            <padding>
                               <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
                            </padding>
                         </PasswordField>
+                        <Text fx:id="PasswordErrorSignIn" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Password incorrect" />
                      </children>
                      <VBox.margin>
                         <Insets top="20.0" />
@@ -81,7 +83,7 @@
                      <children>
                         <Button fx:id="loginButton" mnemonicParsing="false" onAction="#SignInHandler" style="-fx-background-color: transparent; -fx-border-color: #512BEE; -fx-border-radius: 5; -fx-cursor: hand;" text="Log In" textFill="#512bee">
                            <VBox.margin>
-                              <Insets top="20.0" />
+                              <Insets top="50.0" />
                            </VBox.margin>
                            <padding>
                               <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
@@ -116,10 +118,13 @@
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
             </VBox>
          </center>
       </BorderPane>
-      <VBox alignment="TOP_CENTER" minHeight="600.0" minWidth="500.0" style="-fx-background-color: #512BEE; -fx-alignment: center;">
+      <VBox id="coloredBox" alignment="TOP_CENTER" minHeight="600.0" minWidth="395.0" prefHeight="600.0" prefWidth="412.0" style="-fx-background-color: linear-gradient( #512BEE 4.83%, #B339ED 103.44%); -fx-alignment: center;">
          <children>
             <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to&#10;Cento" textAlignment="CENTER">
                <font>
@@ -134,7 +139,7 @@
                   <Insets top="25.0" />
                </VBox.margin>
             </Text>
-            <ImageView fitHeight="124.0" fitWidth="178.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="87.0" fitWidth="123.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/dice.png" />
                </image>

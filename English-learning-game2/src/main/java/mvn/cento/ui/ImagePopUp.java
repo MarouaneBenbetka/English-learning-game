@@ -7,11 +7,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import mvn.cento.Main;
+import mvn.cento.Noyeau.EnonceDefinition;
+import mvn.cento.Noyeau.EnonceImage;
 
 import java.util.Objects;
 
 public class ImagePopUp {
-    public static String[] options ={"images/image.jpg","images/image.jpg","images/image.jpg","images/image.jpg"};
+
+
+    public static EnonceImage enonceImage ;
+    public static final String prefixPath = "";
 
     public static GridPane getImagePopUp(){
 
@@ -25,7 +30,7 @@ public class ImagePopUp {
 
         Text popUpTitle = new Text("Choose the right image :");
         popUpTitle.getStyleClass().add("popUpTitle");
-        Text definition = new Text("This is a tool to play with other  bla bala abdsfljasdlasdhflasdf");
+        Text definition = new Text(enonceImage.getQuestion());
         definition.getStyleClass().add("popUpTxt");
         definition.setWrappingWidth(width-60);
 
@@ -40,7 +45,7 @@ public class ImagePopUp {
         answers.setAlignment(Pos.CENTER);
 
 
-        Image image1 = new Image(Objects.requireNonNull(Main.class.getResource(options[0])).toExternalForm());
+        Image image1 = new Image(Objects.requireNonNull(Main.class.getResource(prefixPath+enonceImage.getImagesUrl()[0])).toExternalForm());
         BackgroundImage bgImage1 = new BackgroundImage(
                 image1,                                                 // image
                 BackgroundRepeat.NO_REPEAT,                            // repeatX
@@ -59,7 +64,7 @@ public class ImagePopUp {
         });
 
 
-        Image image2 = new Image(Objects.requireNonNull(Main.class.getResource(options[0])).toExternalForm());
+        Image image2 = new Image(Objects.requireNonNull(Main.class.getResource(prefixPath+enonceImage.getImagesUrl()[1])).toExternalForm());
         BackgroundImage bgImage2 = new BackgroundImage(
                 image2,                                                 // image
                 BackgroundRepeat.NO_REPEAT,                            // repeatX
@@ -78,7 +83,7 @@ public class ImagePopUp {
         });
 
 
-        Image image3 = new Image(Objects.requireNonNull(Main.class.getResource(options[0])).toExternalForm());
+        Image image3 = new Image(Objects.requireNonNull(Main.class.getResource(prefixPath+enonceImage.getImagesUrl()[2])).toExternalForm());
         BackgroundImage bgImage3 = new BackgroundImage(
                 image3,                                                 // image
                 BackgroundRepeat.NO_REPEAT,                            // repeatX
@@ -98,7 +103,7 @@ public class ImagePopUp {
         });
 
 
-        Image image4 = new Image(Objects.requireNonNull(Main.class.getResource(options[0])).toExternalForm());
+        Image image4 = new Image(Objects.requireNonNull(Main.class.getResource(prefixPath+enonceImage.getImagesUrl()[3])).toExternalForm());
         BackgroundImage bgImage4 = new BackgroundImage(
                 image4,                                                 // image
                 BackgroundRepeat.NO_REPEAT,                            // repeatX
