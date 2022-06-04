@@ -9,6 +9,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.effect.GaussianBlur;
@@ -17,12 +19,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import mvn.cento.Main;
 import mvn.cento.Noyeau.*;
 import mvn.cento.Noyeau.Exceptions.positionInvalideException;
 
+import javax.sound.sampled.*;
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Objects;
 
 public class PlateauScene {
@@ -30,12 +37,12 @@ public class PlateauScene {
     private static int deplacement;
     private static int positionAdeplacer;
     private static int lastPosition =1;
-    private static final GridPane layout = new GridPane();
-    private static final GridPane plateauContainer = new GridPane();
+    private static  GridPane layout = new GridPane();;
+    private static  GridPane plateauContainer = new GridPane() ;
     private static StackPane popUpContainer ;
     private static AnchorPane plateau;
     private static Plateau generatedPlateau;
-    private static final Text usefullMessage = new Text();
+    private static  Text usefullMessage = new Text(); ;
     private static  Text caseType;
     private static Text position;
     private static Text score;
@@ -45,9 +52,14 @@ public class PlateauScene {
 
     private static Partie partie;
 
-    private static int idButton = 1;
+    public static void reset(){
+        layout = new GridPane();;
+        plateauContainer = new GridPane() ;
+        usefullMessage = new Text(); ;
+    }
 
     public static Scene getPlateauScene(Partie partie) throws IOException {
+
 
         PlateauScene.partie = partie;
         generatedPlateau = partie.getPlateau();
@@ -62,7 +74,7 @@ public class PlateauScene {
 
 
 
-        plateauContainer.getChildren().add( plateau);
+        plateauContainer.getChildren().add(plateau);
 
 
         plateauContainer.setAlignment(Pos.CENTER);
@@ -78,12 +90,35 @@ public class PlateauScene {
         sideBar.setPrefHeight(1500);
         sideBar.setAlignment(Pos.TOP_CENTER);
 
+        //back to home
+        HBox backToHome = new HBox();
+
+        Region retrunIcon = new Region();
+        retrunIcon.setId("returnIcon");
+        retrunIcon.setPrefWidth(34);
+        HBox.setMargin(retrunIcon,new Insets(0,10,0,0));
+
+        Text retrunText  = new Text("Back to home");
+        retrunText.getStyleClass().add("returnText");
+
+        backToHome.getChildren().add(retrunIcon);
+        backToHome.getChildren().add(retrunText);
+
+        backToHome.setCursor(Cursor.HAND);
+        backToHome.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
+            Stage stage = (Stage) ((Node)mouseEvent.getSource()).getScene().getWindow();
+            stage.setScene(HomeScene.getHomeScence());
+            stage.centerOnScreen();
+        });
+
+        GridPane.setMargin(backToHome,new Insets(6,0,16,14));
+
         //user Data box
         VBox userData = new VBox();
         userData.setId("userDataBox");
         userData.setMinWidth(270);
         userData.setMaxWidth(270);
-        GridPane.setMargin(userData,new Insets(30,30,30,30));
+        GridPane.setMargin(userData,new Insets(16,30,16,30));
 
         //user account
         HBox userAccount = new HBox();
@@ -164,7 +199,7 @@ public class PlateauScene {
 
         VBox.setMargin(errorMessage ,new Insets(24,8,2,8));
 
-        GridPane.setMargin(infos,new Insets(80,30,10,30));
+        GridPane.setMargin(infos,new Insets(40,30,4,30));
 
         //dices informations
         VBox dices = new VBox();
@@ -212,12 +247,14 @@ public class PlateauScene {
 
         //sizedBox
         VBox sizedBox = new VBox();
-        sizedBox.setPrefHeight(1000);
+        sizedBox.setPrefHeight(400);
 
-        sideBar.add(userData, 0,0);
-        sideBar.add(infos,0,1);
-        sideBar.add(sizedBox,0,2);
-        sideBar.add(dices,0,3);
+
+        sideBar.add(backToHome,0,0);
+        sideBar.add(userData, 0,1);
+        sideBar.add(infos,0,2);
+        sideBar.add(sizedBox,0,3);
+        sideBar.add(dices,0,4);
 
 
 
@@ -350,8 +387,23 @@ public class PlateauScene {
 
 
 
+            try{
 
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.15), new EventHandler<>() {
+
+                URL resourceUrl = Main.class.getResource("audio/diceClip.wav");
+
+
+                File file = new File(resourceUrl.toURI());
+                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+                Clip clip  = AudioSystem.getClip();
+                clip.open(audioInputStream);
+                clip.start();
+
+            } catch (URISyntaxException | UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                e.printStackTrace();
+            }
+
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.2), new EventHandler<>() {
 
                 private int i = 1;
 
@@ -371,7 +423,7 @@ public class PlateauScene {
                             selectedButton.getStyleClass().add("selectedButton");
                             selectedButton.toFront();
                         } else {
-                            positionAdeplacer = generatedPlateau.getPositionCourante() - (positionAdeplacer - 99);
+                            positionAdeplacer = 99 - (positionAdeplacer - 99);
                             Button selectedButton = (Button) scene.lookup("#" + (positionAdeplacer + 1));
                             selectedButton.getStyleClass().add("selectedButton");
                         }
@@ -420,6 +472,9 @@ public class PlateauScene {
     }
 
     public static void addEndPopUp(){
+
+
+
         popUpContainer = new StackPane(EndGamePopUp.getEndGamePopUp());
         popUpContainer.setAlignment(Pos.CENTER);
         popUpContainer.setPrefHeight(2000);
@@ -462,7 +517,7 @@ public class PlateauScene {
 
         else {
 
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.1), new EventHandler<>() {
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.15), new EventHandler<>() {
 
                 private int start2 = start;
 
@@ -509,6 +564,20 @@ public class PlateauScene {
 
                     }
 
+                    try{
+                        URL resourceUrl = Main.class.getResource("movePion.wav");
+
+
+                        assert resourceUrl != null;
+                        File file = new File(resourceUrl.toURI());
+                        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+                        Clip clip  = AudioSystem.getClip();
+                        clip.open(audioInputStream);
+                        clip.start();
+
+                    } catch (URISyntaxException | UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                        e.printStackTrace();
+                    }
 
 
                 }
@@ -533,6 +602,11 @@ public class PlateauScene {
 
         positionAdeplacer= pos -1 ;
         Couleur couleurCase = generatedPlateau.getCaseParPosition(positionAdeplacer).getCouleur() ;
+
+        if(usefullMessage == null){
+            usefullMessage = new Text();
+        }
+
         switch (couleurCase){
             case BLANC -> {
                 caseType.setText("Case : Normal");
@@ -542,12 +616,19 @@ public class PlateauScene {
                 caseType.setText("Case : End");
                 usefullMessage.setVisible(true);
                 usefullMessage.setText("Game Over");
+
+
+
+
             }
             case ROSE, BLEU -> caseType.setText("Case : Question");
             case VERT -> {
                 caseType.setText("Case : Bonus");
                 usefullMessage.setVisible(true);
                 usefullMessage.setText("+10pts , move forward by 2 positions");
+
+
+
             }
             case ORANGE -> {
                 caseType.setText("Case : Jump");
@@ -573,27 +654,95 @@ public class PlateauScene {
         position.setText("Position : "+ (positionAdeplacer + 1));
 
         if(couleurCase == Couleur.ROSE){
+            ImagePopUp.setEnonceImage (((CaseImage) generatedPlateau.getCaseParPosition(positionAdeplacer)).getEnonce());
             addImgPopUp();
         }else if(couleurCase == Couleur.BLEU){
             DefinitionPopUp.setEnonceDefinition (((CaseDefinition) generatedPlateau.getCaseParPosition(positionAdeplacer)).getEnonce());
             addDefPopUp();
         }else if(couleurCase == Couleur.NOIR){
-            addEndPopUp();
             generatedPlateau.getCaseParPosition(positionAdeplacer).traiter(partie);
+            addEndPopUp();
+
+
+
+            try{
+                URL resourceUrl = Main.class.getResource("audio/finalCaseAudio.wav");
+
+
+                File file = new File(resourceUrl.toURI());
+                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+                Clip clip  = AudioSystem.getClip();
+                clip.open(audioInputStream);
+                clip.start();
+
+            } catch (URISyntaxException | UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                e.printStackTrace();
+            }
+
             HomeScene.jeu.sauvgarderJoueurs();
+
+
+
+
+
         }
         else{
-
             generatedPlateau.getCaseParPosition(positionAdeplacer).traiter(partie);
             if(couleurCase == Couleur.ORANGE) {
                 usefullMessage.setText("Jump to position \""+(generatedPlateau.getPositionCourante()+1)+"\"");
+
+
+                try{
+                    URL resourceUrl = Main.class.getResource("audio/jumpAudio.wav");
+
+
+                    assert resourceUrl != null;
+                    File file = new File(resourceUrl.toURI());
+                    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+                    Clip clip  = AudioSystem.getClip();
+                    clip.open(audioInputStream);
+                    clip.start();
+
+                } catch (URISyntaxException | UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                    e.printStackTrace();
+                }
+
+
+            }else if(couleurCase == Couleur.VERT){
+                try{
+                    URL resourceUrl = Main.class.getResource("audio/bonusAudio.wav");
+
+
+                    assert resourceUrl != null;
+                    File file = new File(resourceUrl.toURI());
+                    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+                    Clip clip  = AudioSystem.getClip();
+                    clip.open(audioInputStream);
+                    clip.start();
+
+                } catch (URISyntaxException | UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                    e.printStackTrace();
+                }
+            }else if(couleurCase == Couleur.ROUGE){
+
+                try{
+                    URL resourceUrl = Main.class.getResource("audio/malusAudio.wav");
+
+                    assert resourceUrl != null;
+                    File file = new File(resourceUrl.toURI());
+                    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+                    Clip clip  = AudioSystem.getClip();
+                    clip.open(audioInputStream);
+                    clip.start();
+
+                } catch (URISyntaxException | UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                    e.printStackTrace();
+                }
             }
+
         }
         partie.sauvgarderPartie();
         score.setText("Total Score : "+partie.getScore());
-
-
-
 
 
     }

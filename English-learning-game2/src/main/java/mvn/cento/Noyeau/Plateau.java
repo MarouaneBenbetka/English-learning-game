@@ -76,7 +76,6 @@ public class Plateau implements Serializable {
                 case 5 -> cases[i] = new CaseParcours();
 
             }
-            System.out.println(i+":"+cases[i].getClass());
         }
 
 
@@ -99,7 +98,7 @@ public class Plateau implements Serializable {
 
 
 
-                        if(caseType == 1 && i-2 == lastSpecialCasePosition && lastSpecialCaseType == 0){
+                        if(caseType == 1 && i-2 == lastSpecialCasePosition && (lastSpecialCaseType == 0 || lastSpecialCaseType == 4)){
 
                                 posInsideGroupe++;
                                 nbCaseParType[caseType]++;
@@ -132,7 +131,6 @@ public class Plateau implements Serializable {
                     case 5 -> cases[i] = new CaseParcours();
 
                 }
-                System.out.println(i+":"+cases[i].getClass());
 
             }
 
@@ -154,7 +152,7 @@ public class Plateau implements Serializable {
                 nbCaseParType[caseType]--;
 
 //cas speciale
-                if(caseType == 1 && i-2 == lastSpecialCasePosition && lastSpecialCaseType == 0){
+                if(caseType == 1 && i-2 == lastSpecialCasePosition && (lastSpecialCaseType == 0 || lastSpecialCaseType == 4)){
                     posInsideGroupe++;
                     nbCaseParType[caseType]++;
                     caseType =5 ;
@@ -175,12 +173,10 @@ public class Plateau implements Serializable {
                 case 5 -> cases[i] = new CaseParcours();
 
             }
-            System.out.println(i+":"+cases[i].getClass());
         }
 
 
         cases[99] = new CaseFin();
-        System.out.println("99:"+cases[99].getClass());
 
 
     }
@@ -208,6 +204,8 @@ public class Plateau implements Serializable {
 
     public int deplacer(int dep){
         positionCourante+= dep ;
+        if(positionCourante > 99 )
+            positionCourante = 99 - (positionCourante-99);
         return positionCourante;
     }
 

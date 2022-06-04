@@ -1,6 +1,4 @@
 package mvn.cento.ui;
-
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;

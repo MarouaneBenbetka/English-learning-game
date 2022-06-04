@@ -37,7 +37,6 @@ public class signInController {
     public void SignInHandler(ActionEvent event) {
         String username = userNameTextField.getText();
         String password = passwordTextField.getText();
-        System.out.println("username = " + username + " password = "+password);
 
         stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
 

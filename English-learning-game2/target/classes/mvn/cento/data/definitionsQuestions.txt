@@ -1,27 +1,48 @@
-Question:definition1
-Reponse:response1
+Question:Branch of medicine that deals with cancer
+Reponse:Oncology
 =====================
-Question:definition2
-Reponse:response2
+Question:Japanese art of paper folding
+Reponse:Origami
 =====================
-Question:definition3
-Reponse:response3
-====================
-Question:definition4
-Reponse:response4
+Question:Child who has no parents
+Reponse:Orphan
 =================
-Question:definition5
-Reponse:response5
+Question:Eight-sided polygon
+Reponse:Octagon
 ==================
-Question:definition6
-Reponse:response6
-==================
-Question:definition7
-Reponse:response7
+Question:Newspaper death notice
+Reponse:Obituary
 ===================
-Question:definition8
-Reponse:response8
+Question:Opposite of oriental
+Reponse:Occidental
 ====================
-Question:definition9
-Reponse:response9
+Question:Animal that eats both plants and meat
+Reponse:Omnivore
+====================
+Question:Opposite of transparent
+Reponse:Opaque
+====================
+Question:Angle greater than 90 degrees
+Reponse:Obtuse
+====================
+Question:Spoken, rather than written
+Reponse:Oral
+====================
+Question:Person who sees thing in a positive light
+Reponse:Optimist
+====================
+Question:Doctor who specializes in childbirth
+Reponse:Obstetrician
+====================
+Question:To present others work as one's own
+Reponse:Plagiarize
+====================
+Question:To communicate via gesture, not speech
+Reponse:Pantomime
+============================
+Question:Five-sided polygon
+Reponse:Pentagon
+====================
+Question:Person opposed to war or violence of any kind
+Reponse:Pacifist
 ====================

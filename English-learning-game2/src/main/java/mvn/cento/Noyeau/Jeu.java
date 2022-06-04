@@ -10,8 +10,7 @@ import java.util.*;
 public class Jeu {
 
     private Partie partie ;
-    private HashMap<String, Joueur> joueurs = new HashMap<>();
-
+    private static HashMap<String, Joueur> joueurs = new HashMap<>();
 
     // listes des enonces qui vont etre generer a partir d'un ficher
     public static LinkedList<EnonceDefinition> enonceDefinitions = new LinkedList<>();
@@ -110,17 +109,17 @@ public class Jeu {
                 reponses[3] = line.substring(6);
             }else if(line.startsWith("reponse:")){
                 bonneReponse = Integer.parseInt(line.substring(8));
-                enonceImages.add(new EnonceImage(question,reponses,bonneReponse));
+                enonceImages.add(new EnonceImage(question,Arrays.copyOf(reponses , 4) ,bonneReponse));
             }
         }
         Collections.shuffle(enonceImages);
         for (EnonceImage a : enonceImages){
-            System.out.println(a.getQuestion() +"/"+a.getIndiceBonneReponse());
+            System.out.println(a.getQuestion() +"/"+a.getIndiceBonneReponse() + "/"+a.getImagesUrl()[0]+"/"+a.getImagesUrl()[1]);
         }
     }
 
 
-    public void chargerComptes(){
+    public static void chargerComptes(){
 
         try {
 
@@ -153,24 +152,12 @@ public class Jeu {
     }
 
 
-    public void sauvgarderPartie(){}
 
-    public void sauvgarderJoueurs(){
-
-        /*
-
-        Joueur marouane = new Joueur("Marouane","111"  );
-        marouane.setMeilleurScore(201);
-        joueurs.put("Marouane" ,marouane );
-        Joueur islam =  new Joueur("Islam","111"  );
-        islam.setMeilleurScore(1);
-        joueurs.put("Islam" , islam);
-        joueurs.put("Raid" , new Joueur("Raid","111"  ));
-        joueurs.put("Houssam" , new Joueur("Houssam","111"  ));
-*/
+    public static void sauvgarderJoueurs(){
 
         try {
             URL resourceUrl = Main.class.getResource("data/comptes");
+            assert resourceUrl != null;
             File file = new File(resourceUrl.toURI());
             FileOutputStream fos =  new FileOutputStream(file)  ;
             ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -181,6 +168,28 @@ public class Jeu {
         }
 
     }
+
+    public static int getMeilleurScore(){
+        if(joueurs == null) return 0;
+        if(joueurs.get("__world-record-save__") == null) return 0;
+        return joueurs.get("__world-record-save__").getMeilleurScore();
+    }
+
+    public static void majMeilleurScore(Joueur joueur){
+        if(getMeilleurScore() < joueur.getMeilleurScore()){
+            joueurs.put("__world-record-save__" ,joueur );
+        }
+
+    }
+    public static String getTopJoueurName(){
+        Joueur joueur = joueurs.get("__world-record-save__");
+        if(joueur == null)
+            return "";
+        return joueur.getNom();
+
+
+    }
+
 
 
 }

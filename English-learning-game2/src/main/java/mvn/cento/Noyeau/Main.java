@@ -16,7 +16,7 @@ public class Main {
 
                 jeu.identifier("Marouane"  , "111");
                 jeu.getPartie().creerPartie();
-                jeu.getPartie().lancerPartie();
+
 
 
     }

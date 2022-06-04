@@ -38,7 +38,7 @@ public class CaseDefinition extends Case{
     }
 
     public boolean verifyerReponse(String reponse){
-        result = reponse.equals(enonce.getReponse());
+        result = reponse.equalsIgnoreCase(enonce.getReponse());
         return  result;
     }
 

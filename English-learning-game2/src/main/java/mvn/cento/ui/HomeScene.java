@@ -31,13 +31,13 @@ public class HomeScene {
 
    public static Jeu jeu = new Jeu() ; 
 
-    private static VBox container = new VBox();
+    private static VBox container ;
     private static Text welcomeTxt;
     private static Text record;
 
     public static Scene getHomeScence(){
 
-
+        container= new VBox();
         container.setId("homeContainer");
         container.setAlignment(Pos.TOP_CENTER);
 
@@ -100,6 +100,7 @@ public class HomeScene {
             jeu.getPartie().creerPartie();
             Scene scene;
             try {
+                PlateauScene.reset();
                 scene = PlateauScene.getPlateauScene( jeu.getPartie());
                 Stage stage = (Stage) ((Node)e.getSource()).getScene().getWindow();
                 stage.setScene(scene);
@@ -119,18 +120,18 @@ public class HomeScene {
 
         continueGame.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
             try {
+
+                PlateauScene.reset();
                 jeu.getPartie().chargerAncienPartie();
                 Scene scene;
                 scene = PlateauScene.getPlateauScene( jeu.getPartie());
                 Stage stage = (Stage) ((Node)e.getSource()).getScene().getWindow();
                 stage.setScene(scene);
-                stage.setTitle("Cento Game ");
+                stage.setTitle("Cento Game");
                 stage.centerOnScreen();
 
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } catch (ClassNotFoundException ex) {
-                ex.printStackTrace();
+            } catch (IOException | ClassNotFoundException ex) {
+                System.out.println("aucune partie trouve");
             }
 
         });
@@ -139,8 +140,14 @@ public class HomeScene {
         Button ranking = new Button("Ranking");
         ranking.getStyleClass().add("choiceButton");
 
-        Button exit = new Button("Exit");
+        Button exit = new Button("Log out");
         exit.getStyleClass().add("choiceButton");
+
+        exit.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+            Stage stage = (Stage) ((Node)e.getSource()).getScene().getWindow();
+            stage.setScene(SignInScene.getSignInScene());
+            stage.centerOnScreen();
+        });
 
         VBox.setMargin(newGame , new Insets(8,0,10,0));
         buttonsChoices.getChildren().add(newGame);

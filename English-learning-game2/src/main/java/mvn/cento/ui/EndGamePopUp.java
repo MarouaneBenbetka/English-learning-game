@@ -4,6 +4,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -11,6 +12,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
+import mvn.cento.Noyeau.Jeu;
 
 public class EndGamePopUp {
 
@@ -28,21 +31,34 @@ public class EndGamePopUp {
 
         Text popUpTitle = new Text("Game Over");
         popUpTitle.getStyleClass().add("popUpTitle");
-        Text definition = new Text("Congrats you hvae just completed an adventure of 100 case.");
+        Text definition = new Text("Congrats you have just completed an adventure of 100 box.");
         definition.getStyleClass().add("popUpTxt");
         definition.setWrappingWidth(width-60);
 
-        Text totalScore = new Text("Total Score : 100");
+        Text totalScore = new Text("Total Score : "+PlateauScene.getPartie().getScore());
         totalScore.getStyleClass().add("popUpTxt");
-        Text topRecord = new Text("Personal record : 1000");
+        Text topRecord = new Text("Personal record : "+PlateauScene.getPartie().getJoueur().getMeilleurScore());
         topRecord.getStyleClass().add("popUpTxt");
-        Text worldRecord = new Text("World record : 6969");
+        Text worldRecord = new Text("World record : "+PlateauScene.getPartie().getMeilleurScoreJeu());
         worldRecord.getStyleClass().add("popUpTxt");
 
+        Text recordTxt;
+        int diff = PlateauScene.getPartie().getJoueur().getMeilleurScore()  - PlateauScene.getPartie().getScore() ;
+        if(diff == 0){
+            recordTxt = new Text("congrat's new record");
+        }else {
+            recordTxt = new Text(diff+" points left to beat your old record");
+        }
+        diff = PlateauScene.getPartie().getMeilleurScoreJeu()  - PlateauScene.getPartie().getScore() ;
 
-        Text recordTxt = new Text("10 points left to beat your old record");
         recordTxt.getStyleClass().add("small-black-txt");
-        Text worldRecordTxt = new Text("20 points left to beat the world record");
+
+        Text worldRecordTxt ;
+        if(diff == 0){
+            worldRecordTxt = new Text("congrat's new record");
+        }else {
+            worldRecordTxt = new Text(diff+" points left to beat the world record own by ("+ Jeu.getTopJoueurName()+")");
+        }
         worldRecordTxt.getStyleClass().add("small-black-txt");
 
         container.getChildren().add(popUpTitle);
@@ -57,7 +73,9 @@ public class EndGamePopUp {
         Button submitButton = new Button("Back to home");
         submitButton.getStyleClass().add("purpuleButton");
         submitButton.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
-            PlateauScene.removePopUp();
+            Stage stage = (Stage) ((Node)mouseEvent.getSource()).getScene().getWindow();
+            stage.setScene(HomeScene.getHomeScence());
+            stage.centerOnScreen();
         });
 
         container.getChildren().add(submitButton);

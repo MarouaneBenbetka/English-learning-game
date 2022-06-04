@@ -17,12 +17,19 @@ import mvn.cento.Main;
 import mvn.cento.Noyeau.CaseDefinition;
 import mvn.cento.Noyeau.EnonceDefinition;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.File;
+import java.net.URL;
 import java.util.Objects;
 import java.util.Stack;
 
 public class DefinitionPopUp {
 
     public static EnonceDefinition enonceDefinition ;
+    private static int lastPos ;
+    private static Button continueButton;
 
     public static GridPane getDefinitionPopUp(){
 
@@ -48,7 +55,7 @@ public class DefinitionPopUp {
 
 
         TextField answer = new TextField();
-        answer.setId("word-input");
+        answer.getStyleClass().add("word-input");
         answer.setAlignment(Pos.CENTER);
         answer.setMaxWidth(enonceDefinition.getReponse().length()*30);
         answer.setPromptText("here");
@@ -74,17 +81,42 @@ public class DefinitionPopUp {
         Button submitButton = new Button("submit");
         submitButton.getStyleClass().add("purpuleButton");
         submitButton.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
+            answer.setEditable(false);
             String textFiledAnswer = answer.getText();
-            int lastPos = PlateauScene.getPartie().getPlateau().getPositionCourante()+1 ;
+            lastPos = PlateauScene.getPartie().getPlateau().getPositionCourante()+1 ;
             boolean res =  ((CaseDefinition)PlateauScene.getPartie().getPlateau().getCaseCourante()).verifyerReponse(textFiledAnswer);
             PlateauScene.getPartie().getPlateau().getCaseCourante().traiter(PlateauScene.getPartie());
-            if(res ){
-                PlateauScene.movePion(lastPos ,PlateauScene.getPartie().getPlateau().getPositionCourante()+1  );
-            }else{
-                PlateauScene.setScore(PlateauScene.getPartie().getScore());
+
+            generateAudio(res);
+            Text feedback = new Text();
+            feedback.getStyleClass().add("feedBackTxt");
+            if(res){
+                answer.getStyleClass().add("bonneReponse");
+                feedback.setText("Good job");
+
+
+            }else {
+                answer.getStyleClass().add("movaiseReponse");
+                feedback.setText("The right answer was \""+ enonceDefinition.getReponse()+"\"");
             }
-            PlateauScene.removePopUp();
+
+            container.getChildren().remove(submitButton);
+            container.getChildren().add(feedback);
+            container.getChildren().add(continueButton);
+            VBox.setMargin(continueButton,new Insets(20,0,10,0));
+
         });
+
+        continueButton = new Button("continue");
+        continueButton.getStyleClass().add("purpuleButton");
+        continueButton.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
+
+
+            PlateauScene.removePopUp();
+            PlateauScene.movePion(lastPos ,PlateauScene.getPartie().getPlateau().getPositionCourante()+1  );
+            PlateauScene.setScore(PlateauScene.getPartie().getScore());
+        });
+
 
         container.getChildren().add(submitButton);
 
@@ -109,5 +141,28 @@ public class DefinitionPopUp {
 
     public static void setEnonceDefinition(EnonceDefinition enonceDefinition){
         DefinitionPopUp.enonceDefinition = enonceDefinition;
+    }
+
+
+    private static void generateAudio(boolean res){
+        try{
+            URL resourceUrl;
+            if(res) {
+                resourceUrl = Main.class.getResource("audio/correct.wav");
+            }
+            else{
+                resourceUrl = Main.class.getResource("audio/error.wav");
+            }
+
+            assert resourceUrl != null;
+            File file = new File(resourceUrl.toURI());
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+            Clip clip  = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
