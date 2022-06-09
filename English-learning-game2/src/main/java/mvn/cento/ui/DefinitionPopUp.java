@@ -93,8 +93,6 @@ public class DefinitionPopUp {
             if(res){
                 answer.getStyleClass().add("bonneReponse");
                 feedback.setText("Good job");
-
-
             }else {
                 answer.getStyleClass().add("movaiseReponse");
                 feedback.setText("The right answer was \""+ enonceDefinition.getReponse()+"\"");

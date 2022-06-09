@@ -12,7 +12,12 @@ public class CaseSaut extends Case{
     @Override
     public void traiter(Partie partie) {
 
-        position = ThreadLocalRandom.current().nextInt(0, 99 + 1);
+        do{
+
+            position = ThreadLocalRandom.current().nextInt(0, 99 + 1);
+
+        }while (position == partie.getPlateau().getPositionCourante());
+
         partie.getPlateau().positioner(position );
 
     }

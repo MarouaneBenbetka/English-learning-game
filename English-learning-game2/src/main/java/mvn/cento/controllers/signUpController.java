@@ -64,6 +64,7 @@ public class signUpController {
             stage.setTitle("Cento Game - Home");
             stage.centerOnScreen();
 
+
         } catch (utilisateurDejaExistantException  e) {
             UsernameErrorSignUp.setText("User name already exists");
             UsernameErrorSignUp.setVisible(true);

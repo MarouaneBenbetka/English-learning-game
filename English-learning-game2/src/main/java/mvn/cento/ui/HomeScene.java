@@ -37,6 +37,11 @@ public class HomeScene {
 
     public static Scene getHomeScence(){
 
+
+
+
+
+
         container= new VBox();
         container.setId("homeContainer");
         container.setAlignment(Pos.TOP_CENTER);
@@ -140,6 +145,16 @@ public class HomeScene {
         Button ranking = new Button("Ranking");
         ranking.getStyleClass().add("choiceButton");
 
+        ranking.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+            Stage stage = (Stage) ((Node)e.getSource()).getScene().getWindow();
+            Scene scene2 = new Scene(RankingScene.getRankingScene(),1300 , 750);
+
+            scene2.getStylesheets().addAll(Objects.requireNonNull(Main.class.getResource("css/style.css")).toExternalForm());
+
+            stage.setScene(scene2);
+            stage.centerOnScreen();
+        });
+
         Button exit = new Button("Log out");
         exit.getStyleClass().add("choiceButton");
 
@@ -203,6 +218,10 @@ public class HomeScene {
         container.getChildren().add(footer);
 
         scene.getStylesheets().addAll(Objects.requireNonNull(Main.class.getResource("css/style.css")).toExternalForm());
+
+
+
+
 
         return scene ;
 

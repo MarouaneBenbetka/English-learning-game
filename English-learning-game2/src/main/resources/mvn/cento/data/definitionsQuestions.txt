@@ -39,10 +39,48 @@ Reponse:Plagiarize
 ====================
 Question:To communicate via gesture, not speech
 Reponse:Pantomime
-============================
+====================
 Question:Five-sided polygon
 Reponse:Pentagon
 ====================
 Question:Person opposed to war or violence of any kind
 Reponse:Pacifist
 ====================
+Question:Which is a synonym for “baffle”?
+Reponse:Frustrate
+====================
+Question:Which is a synonym for “superb”?
+Reponse:Magnificient
+====================
+Question:Which is a synonym for “sketch”?
+Reponse:Depict
+====================
+Question:Which is a synonym for “avoid”?
+Reponse:Escape
+====================
+Question:Which is a synonym for “tired”?
+Reponse:Exhausted
+====================
+Question:majestic means :
+Reponse:Royal
+====================
+Question:store means :
+Reponse:Shop
+====================
+Question:the opposite of smooth means :
+Reponse:Rough
+====================
+Question:Where would you most likely have an account?
+Reponse:Bank
+====================
+Question:a continuous vertical brick or stone structure
+Reponse:Wall
+====================
+Question:used for untangling or arranging the hair.
+Reponse:Comb
+====================
+Question:a person having a large amount of excess flesh.
+Reponse:Fat
+===================
+Question:a heavy often tufted fabric used as a floor covering
+Reponse:Carpet

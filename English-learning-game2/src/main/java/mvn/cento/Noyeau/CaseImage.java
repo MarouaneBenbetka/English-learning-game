@@ -1,7 +1,5 @@
 package mvn.cento.Noyeau;
 
-import java.util.Scanner;
-
 public class CaseImage extends Case{
 
     private EnonceImage enonce;

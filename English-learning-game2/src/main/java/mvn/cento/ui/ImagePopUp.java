@@ -58,6 +58,7 @@ public class ImagePopUp {
 
 
         Image image1 = new Image(Objects.requireNonNull(Main.class.getResource(prefixPath+enonceImage.getImagesUrl()[0])).toExternalForm());
+
         BackgroundImage bgImage1 = new BackgroundImage(
                 image1,                                                 // image
                 BackgroundRepeat.NO_REPEAT,                            // repeatX
@@ -65,6 +66,7 @@ public class ImagePopUp {
                 BackgroundPosition.CENTER,                             // position
                 new BackgroundSize(-1, -1, false, false, false, true)  // size
         );
+
         option1 = new AnchorPane();
         option1.getStyleClass().add("ImageContainer");
         option1.setPrefWidth(200);

@@ -26,6 +26,7 @@ public class Jeu {
     }
 
 
+
     public void identifier(String nom, String motDePasse) throws utilisateurNonExistantException, motDePasseIncorrectException {
 
         Joueur joueur = joueurs.get(nom);
@@ -83,9 +84,7 @@ public class Jeu {
            }
 
         Collections.shuffle(enonceDefinitions);
-           for (EnonceDefinition a : enonceDefinitions){
-               System.out.println(a.getQuestion() + "/"+a.getReponse());
-           }
+
     }
 
 
@@ -113,9 +112,7 @@ public class Jeu {
             }
         }
         Collections.shuffle(enonceImages);
-        for (EnonceImage a : enonceImages){
-            System.out.println(a.getQuestion() +"/"+a.getIndiceBonneReponse() + "/"+a.getImagesUrl()[0]+"/"+a.getImagesUrl()[1]);
-        }
+
     }
 
 
@@ -133,12 +130,6 @@ public class Jeu {
             ObjectInputStream ois = new ObjectInputStream(fis);
             joueurs = (HashMap<String, Joueur> ) ois.readObject();
 
-            for(Map.Entry<String,Joueur> entry : joueurs.entrySet()) {
-                String key = entry.getKey();
-                Joueur value = entry.getValue();
-
-                System.out.println(key + " => " + value);
-            }
 
 
             ois.close();
@@ -175,6 +166,8 @@ public class Jeu {
         return joueurs.get("__world-record-save__").getMeilleurScore();
     }
 
+
+
     public static void majMeilleurScore(Joueur joueur){
         if(getMeilleurScore() < joueur.getMeilleurScore()){
             joueurs.put("__world-record-save__" ,joueur );
@@ -187,7 +180,10 @@ public class Jeu {
             return "";
         return joueur.getNom();
 
+    }
 
+    public static HashMap<String, Joueur> getJoueurs(){
+        return Jeu.joueurs;
     }
 
 

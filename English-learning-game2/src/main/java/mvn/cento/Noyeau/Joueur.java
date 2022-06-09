@@ -64,7 +64,7 @@ public class Joueur  implements Comparable<Joueur> , Serializable {
     public int compareTo(Joueur joueur) {
 
         if(this.nom.equals(joueur.nom)) return 0;
-        if(this.meilleurScore >= joueur.meilleurScore) return 1;
-        return  -1 ;
+        if(this.meilleurScore >= joueur.meilleurScore) return -1;
+        return  1 ;
     }
 }

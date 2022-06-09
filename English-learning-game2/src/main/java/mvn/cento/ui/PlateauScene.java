@@ -40,13 +40,15 @@ public class PlateauScene {
     private static  GridPane layout = new GridPane();;
     private static  GridPane plateauContainer = new GridPane() ;
     private static StackPane popUpContainer ;
-    private static AnchorPane plateau;
+    public static AnchorPane plateau;
     private static Plateau generatedPlateau;
     private static  Text usefullMessage = new Text(); ;
     private static  Text caseType;
     private static Text position;
     private static Text score;
     private static Button throwButton;
+    private static HBox backToHome;
+    private static boolean ableToMove ;
 
 
 
@@ -56,6 +58,7 @@ public class PlateauScene {
         layout = new GridPane();;
         plateauContainer = new GridPane() ;
         usefullMessage = new Text(); ;
+        ableToMove = true;
     }
 
     public static Scene getPlateauScene(Partie partie) throws IOException {
@@ -91,14 +94,15 @@ public class PlateauScene {
         sideBar.setAlignment(Pos.TOP_CENTER);
 
         //back to home
-        HBox backToHome = new HBox();
+        backToHome = new HBox();
 
         Region retrunIcon = new Region();
         retrunIcon.setId("returnIcon");
-        retrunIcon.setPrefWidth(34);
+        retrunIcon.setPrefWidth(32);
+        retrunIcon.setPrefHeight(38);
         HBox.setMargin(retrunIcon,new Insets(0,10,0,0));
 
-        Text retrunText  = new Text("Back to home");
+        Text retrunText  = new Text("pause");
         retrunText.getStyleClass().add("returnText");
 
         backToHome.getChildren().add(retrunIcon);
@@ -106,9 +110,7 @@ public class PlateauScene {
 
         backToHome.setCursor(Cursor.HAND);
         backToHome.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
-            Stage stage = (Stage) ((Node)mouseEvent.getSource()).getScene().getWindow();
-            stage.setScene(HomeScene.getHomeScence());
-            stage.centerOnScreen();
+            addPausePopUp();
         });
 
         GridPane.setMargin(backToHome,new Insets(6,0,16,14));
@@ -316,13 +318,23 @@ public class PlateauScene {
 
 
             casePlateau.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
+
+                 if(! ableToMove ) return;
+
+                 ableToMove = false ;
                 try{
+
 
                     int pos =  Integer.parseInt(casePlateau.getId()) -1 ;
 
 
                     lastPosition=generatedPlateau.getPositionCourante()+1;
-                    generatedPlateau.positioner(pos,positionAdeplacer );
+
+                    /*if(generatedPlateau.getCaseParPosition(pos).getCouleur()!= Couleur.BLANC){
+                        generatedPlateau.positioner(pos,pos);
+                    }else {*/
+                        generatedPlateau.positioner(pos,positionAdeplacer );
+                  /*  }*/
 
 
                     casePlateau.getStyleClass().remove("selectedButton");
@@ -361,12 +373,14 @@ public class PlateauScene {
                             usefullMessage.setText("-10pts , move backward by 2 positions");
                         }
                     }
+
+
                         movePion(lastPosition,generatedPlateau.getPositionCourante()+1 );
 
 
                 }catch (positionInvalideException e){
                     errorMessage.setVisible(true);
-                    System.out.println(e.getMessage());
+                    ableToMove = true;
                 }
             });
         }
@@ -382,7 +396,6 @@ public class PlateauScene {
 
             if((generatedPlateau.getPositionCourante() + deplacement)>99 || generatedPlateau.getCaseParPosition(generatedPlateau.getPositionCourante() + deplacement).getCouleur()== Couleur.BLANC){
                 deplacement = generatedPlateau.lancerDes();
-                System.out.println("again");
             }
 
 
@@ -415,6 +428,7 @@ public class PlateauScene {
                         dice2.setImage(new Image(Objects.requireNonNull(Main.class.getResource("images/dices/dice" + (7 - i) + ".png")).toExternalForm()));
 
                     } else {
+
                         dice1.setImage(new Image(Objects.requireNonNull(Main.class.getResource("images/dices/dice" + generatedPlateau.getDe1() + ".png")).toExternalForm()));
                         dice2.setImage(new Image(Objects.requireNonNull(Main.class.getResource("images/dices/dice" + generatedPlateau.getDe2() + ".png")).toExternalForm()));
                         positionAdeplacer = generatedPlateau.getPositionCourante() + deplacement;
@@ -424,8 +438,15 @@ public class PlateauScene {
                             selectedButton.toFront();
                         } else {
                             positionAdeplacer = 99 - (positionAdeplacer - 99);
-                            Button selectedButton = (Button) scene.lookup("#" + (positionAdeplacer + 1));
-                            selectedButton.getStyleClass().add("selectedButton");
+                            if(positionAdeplacer != generatedPlateau.getPositionCourante()){
+
+
+                                Button selectedButton = (Button) scene.lookup("#" + (positionAdeplacer + 1));
+                                selectedButton.getStyleClass().add("selectedButton");
+                            }else {
+                                throwButton.setDisable(false);
+                            }
+
                         }
 
 
@@ -437,8 +458,8 @@ public class PlateauScene {
             }));
             timeline.setCycleCount(6);
             timeline.play();
-
             throwButton.setDisable(true);
+
 
 
         });
@@ -450,11 +471,16 @@ public class PlateauScene {
     }
 
     public static void removePopUp(){
+        backToHome.setDisable(false);
         layout.getChildren().remove(2);
         plateauContainer.setEffect(new GaussianBlur(0));
+        if(!partie.getFinPartie()){
+            throwButton.setDisable(false);
+        }
     }
 
     public static void addDefPopUp(){
+        backToHome.setDisable(true);
         popUpContainer = new StackPane(DefinitionPopUp.getDefinitionPopUp());
         popUpContainer.setAlignment(Pos.CENTER);
         popUpContainer.setPrefHeight(2000);
@@ -463,6 +489,7 @@ public class PlateauScene {
         plateauContainer.setEffect(new GaussianBlur(30));
     }
     public static void addImgPopUp(){
+        backToHome.setDisable(true);
         popUpContainer = new StackPane(ImagePopUp.getImagePopUp());
         popUpContainer.setAlignment(Pos.CENTER);
         popUpContainer.setPrefHeight(2000);
@@ -473,7 +500,7 @@ public class PlateauScene {
 
     public static void addEndPopUp(){
 
-
+        backToHome.setDisable(true);
 
         popUpContainer = new StackPane(EndGamePopUp.getEndGamePopUp());
         popUpContainer.setAlignment(Pos.CENTER);
@@ -485,6 +512,20 @@ public class PlateauScene {
         plateauContainer.setEffect(new GaussianBlur(30));
 
 
+    }
+    public static void addPausePopUp(){
+        backToHome.setDisable(true);
+
+
+        popUpContainer = new StackPane(GamePausedPopUp.getGamePausedPoP());
+        popUpContainer.setAlignment(Pos.CENTER);
+        popUpContainer.setPrefHeight(2000);
+        popUpContainer.setPrefWidth(2000);
+        layout.add(popUpContainer,1,0);
+
+
+        throwButton.setDisable(true);
+        plateauContainer.setEffect(new GaussianBlur(30));
     }
 
 
@@ -511,6 +552,8 @@ public class PlateauScene {
 
             if(( lastPosition-1) != generatedPlateau.getPositionCourante()){
                 movePion(lastPosition,generatedPlateau.getPositionCourante()+1);
+            }else {
+                ableToMove = true;
             }
 
         }
@@ -565,7 +608,7 @@ public class PlateauScene {
                     }
 
                     try{
-                        URL resourceUrl = Main.class.getResource("movePion.wav");
+                        URL resourceUrl = Main.class.getResource("audio/movePion.wav");
 
 
                         assert resourceUrl != null;
@@ -583,12 +626,18 @@ public class PlateauScene {
                 }
             }));
 
+            if(dep == 0){
+                throwButton.setDisable(false);
+                ableToMove = true;
+            }
             timeline.setCycleCount(Math.abs(dep) );
             timeline.play();
             lastPosition = end;
             timeline.setOnFinished(e-> {
                 if(( lastPosition-1) != generatedPlateau.getPositionCourante()){
                     movePion(lastPosition,generatedPlateau.getPositionCourante()+1);
+                }else {
+                    ableToMove = true;
                 }
             });
         }

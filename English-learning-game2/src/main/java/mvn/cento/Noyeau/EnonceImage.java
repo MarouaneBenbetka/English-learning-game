@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class EnonceImage implements Serializable {
 
     private final String question ;
-    private  String[]  imagesUrl = new String[4];
+    private  String[]  imagesUrl ;
     private final int indiceBonneReponse ;
 
 

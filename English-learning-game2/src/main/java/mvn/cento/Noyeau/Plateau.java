@@ -35,7 +35,6 @@ public class Plateau implements Serializable {
 
 
         cases[0] = new CaseDepart();
-        System.out.println(cases[0].getClass());
 
 
         int lastSpecialCasePosition =0;
