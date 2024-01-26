@@ -1,5 +1,7 @@
 # CENTO Game
 
+![CENTO Logo](./screenshots/logo.png)
+
 Welcome to CENTO, the exciting desktop application that combines the thrill of dice rolling with the challenge of learning English words! Enhance your vocabulary in a fun and interactive way through a game of dice.
 
 ## Table of Contents
